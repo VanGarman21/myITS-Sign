@@ -1,6 +1,6 @@
 import PageTransition from "@/components/PageLayout";
 import ContainerQuery from "@/components/atoms/ContainerQuery";
-import { HomeSolidIconMade } from "@/components/atoms/IconsMade";
+import { CheckmarkSquaresSolidIconMade, FormSolidIconMade, HomeSolidIconMade, UserCheckmarkSolidIconMade } from "@/components/atoms/IconsMade";
 import PageRow from "@/components/atoms/PageRow";
 import Wrapper from "@/components/atoms/Wrapper";
 import Carousel from "@/components/molecules/Carousel";
@@ -28,9 +28,9 @@ const Beranda = () => {
 
   const icons: { [key: string]: ComponentWithAs<"svg", IconProps> } = {
     beranda: HomeSolidIconMade,
-    verify: HomeSolidIconMade, // Ganti dengan ikon yang sesuai
-    table: HomeSolidIconMade, // Ganti dengan ikon yang sesuai
-    spesimen: HomeSolidIconMade,
+    verify: CheckmarkSquaresSolidIconMade, // Ganti dengan ikon yang sesuai
+    table: FormSolidIconMade, // Ganti dengan ikon yang sesuai
+    spesimen: UserCheckmarkSolidIconMade,
   };
   const accountInfo = useContext(AccountInfoContext);
 
@@ -91,7 +91,7 @@ const Beranda = () => {
                       // className={poppins.className}
                       lineHeight="1.111"
                     >
-                      myITS Academics
+                      myITS Sign
                     </Text>
                     <Text
                       fontSize="16px"
@@ -100,7 +100,7 @@ const Beranda = () => {
                       mt="8px"
                       lineHeight="1.5"
                     >
-                      Kelola perkuliahan di sini
+                      Kelola Dokumen di sini
                     </Text>
                   </Box>
                 </Flex>

@@ -1,7 +1,10 @@
 import {
+  CheckmarkSquaresIcon,
   DocumentIcon,
+  FormIcon,
   HomeIcon,
   SettingIcon,
+  UserCheckmark,
 } from "@/components/atoms/IconParams";
 import roles from "@/config/Roles";
 import { MenuItem } from "@/types/menu-item";
@@ -19,19 +22,19 @@ const menuItem: Array<MenuItem> = [
   {
     name: "verify",
     url: "/verify",
-    icon: DocumentIcon,
+    icon: CheckmarkSquaresIcon,
     isShown: ({ activeRole }) => true,
   },
   {
     name: "table",
-    url: "/table",
-    icon: HomeIcon,
+    url: "/tandatangan",
+    icon: FormIcon,
     isShown: ({ activeRole }) => true,
   },
   {
     name: "specimen",
     url: "/manage-specimen",
-    icon: SettingIcon,
+    icon: UserCheckmark,
     isShown: ({ activeRole }) => true,
   },
 ];

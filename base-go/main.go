@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -34,16 +35,27 @@ import (
 // @externalDocs.description  Dokumentasi Base Project
 // @externalDocs.url          http://localhost:8080/doc/project
 func main() {
-	godotenv.Load()
+	 // Load env
+	 _ = godotenv.Load()
 
-	// Create context that listens for the interrupt signal from the OS.
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
+	 // Override env var manual untuk pastikan
+	 os.Setenv("DB_DRIVER", "sqlserver")
+	 os.Setenv("DB_USERNAME", "sa")
+	 os.Setenv("DB_PASSWORD", "123456")
+	 os.Setenv("DB_HOST", "172.29.160.1")
+	 os.Setenv("DB_PORT", "1433")
+	 os.Setenv("DB_DATABASE", "master")
+ 
+	 fmt.Println("DB_USERNAME =", os.Getenv("DB_USERNAME"))
+	 fmt.Println("DB_PASSWORD =", os.Getenv("DB_PASSWORD"))
+ 
+	 ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	 defer stop()
+ 
+	 var srv *http.Server
+	 var application *app.Application
 
-	var srv *http.Server
-	var application *app.Application
-
-	// Initializing the server in a goroutine so that
+	
 	// it won't block the graceful shutdown handling below
 	go func() {
 		application = app.NewApplication(ctx, do.DefaultInjector, config.Config())

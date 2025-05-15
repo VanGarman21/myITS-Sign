@@ -33,13 +33,13 @@ const SignaturePage: React.FC = () => {
   const handleSelectChange = (value: string) => {
     switch (value) {
       case "Penandatangan Sendiri":
-        router.push("/penandatangan-sendiri");
+        router.push("/ttd-sendiri");
         break;
       case "Penandatangan Dengan Pihak Lain":
-        router.push("/pihak-lain");
+        router.push("/ttd-pihak-lain");
         break;
       case "Penandatangan Secara Massal":
-        router.push("/massal");
+        router.push("/ttd-massal");
         break;
       default:
         break;

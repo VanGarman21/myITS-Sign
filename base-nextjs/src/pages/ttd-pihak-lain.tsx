@@ -29,7 +29,7 @@ const BuatTandaTanganSendiri = () => {
       reader.onload = (e) => {
         localStorage.setItem("currentDocument", e.target?.result as string);
         localStorage.setItem("documentName", selectedFile.name);
-        window.location.href = "/tanda-tangan";
+        window.location.href = "/kelola-tanda-tangan";
       };
       reader.readAsDataURL(selectedFile);
     }
@@ -44,7 +44,9 @@ const BuatTandaTanganSendiri = () => {
         >
           ←
         </button>
-        <h1 className="text-2xl font-bold">Buat Tanda Tangan Sendiri</h1>
+        <h1 className="text-2xl font-bold">
+          Buat Tanda Tangan Dengan Pihak Lain
+        </h1>
       </div>
 
       {/* Konteks Penandatangan */}
@@ -158,7 +160,7 @@ const BuatTandaTanganSendiri = () => {
               </svg>
               <p className="text-gray-400 text-sm">Belum ada dokumen dipilih</p>
               <p className="text-gray-400 text-xs mt-1">
-                Format yang didukung: PDF, DOC, DOCX
+                Format yang didukung: PDF
               </p>
             </div>
           )}
@@ -194,7 +196,7 @@ const BuatTandaTanganSendiri = () => {
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-2">Layanan</h2>
         <p className="p-2 bg-gray-100 rounded-md inline-block">
-          Tanda Tangan Sendiri
+          Tanda Tangan Pihak Lain
         </p>
       </div>
 
@@ -243,6 +245,25 @@ const BuatTandaTanganSendiri = () => {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Anggota Penandatangan */}
+      <div className="mb-8 mt-8">
+        <h2 className="text-lg font-semibold mb-4">Anggota Penandatangan</h2>
+        <div className="mb-4">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              className="form-checkbox h-5 w-5 text-blue-500"
+            />
+            <span>Ikutkan saya dalam penandatangan</span>
+          </label>
+        </div>
+        <input
+          type="text"
+          placeholder="Pilih anggota penandatangan"
+          className="w-full p-3 border rounded-md"
+        />
       </div>
 
       <button style={styles.saveButton} className="mb-10" onClick={handleSave}>

@@ -29,7 +29,7 @@ const BuatTandaTanganSendiri = () => {
       reader.onload = (e) => {
         localStorage.setItem("currentDocument", e.target?.result as string);
         localStorage.setItem("documentName", selectedFile.name);
-        window.location.href = "/tanda-tangan";
+        window.location.href = "/kelola-tanda-tangan";
       };
       reader.readAsDataURL(selectedFile);
     }
@@ -39,7 +39,7 @@ const BuatTandaTanganSendiri = () => {
     <div className="p-6 max-w-3xl mx-auto">
       <div className="flex items-center mb-6">
         <button
-          onClick={() => (window.location.href = "/table")}
+          onClick={() => (window.location.href = "/tandatangan")}
           className="mr-4 bg-gray-200 p-2 rounded-full hover:bg-gray-300"
         >
           ←
