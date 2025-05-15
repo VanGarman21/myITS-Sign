@@ -1,0 +1,155 @@
+.container {
+  max-width: 680px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.title {
+  color: #2d3748;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dropzone {
+  border: 2px dashed #cbd5e0;
+  border-radius: 12px;
+  padding: 3rem 1rem;
+  background-color: #f7fafc;
+  transition: all 0.2s ease;
+  margin-bottom: 1.5rem;
+}
+
+.dropzone:hover {
+  border-color: #4299e1;
+  background-color: #ebf8ff;
+}
+
+.uploadContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.uploadIcon {
+  width: 48px;
+  height: 48px;
+  color: #718096;
+}
+
+.textGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mainText {
+  color: #718096;
+  font-size: 1rem;
+}
+
+.browseButton {
+  background-color: #4299e1;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.browseButton:hover {
+  background-color: #3182ce;
+}
+
+.hintText {
+  color: #a0aec0;
+  font-size: 0.875rem;
+}
+
+.filePreview {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 1.5rem;
+}
+
+.fileIcon {
+  width: 24px;
+  height: 24px;
+  color: #718096;
+}
+
+.fileName {
+  color: #2d3748;
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.errorMessage {
+  color: #e53e3e;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 1rem;
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitButton:disabled {
+  background-color: #cbd5e0;
+  cursor: not-allowed;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #3182ce;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding: 0 2rem;
+  }
+  
+  .dropzone {
+    padding: 4rem 2rem;
+  }
+} 
+
+/* Tambahkan class baru ini */
+.hiddenInput {
+  display: none;
+}
+
+.successMessage {
+  color: #38a169;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+/* Update existing styles untuk respons yang lebih baik */
+.dropzone {
+  cursor: pointer;
+}
+
+.filePreview {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #f7fafc;
+}
+
+.browseButton {
+  margin-top: 1rem;
+}
