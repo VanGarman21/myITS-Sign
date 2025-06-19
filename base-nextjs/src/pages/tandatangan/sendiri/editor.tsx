@@ -234,7 +234,10 @@ export default function EditorTandaTanganSendiri({
       formData.append("width", width.toString());
       formData.append("height", height.toString());
       // LOG semua data yang akan dikirim
-      for (let pair of formData.entries()) {
+      // Fix: Avoid for..of on FormData.entries() for compatibility
+      const entries = Array.from(formData.entries());
+      for (let i = 0; i < entries.length; i++) {
+        const pair = entries[i];
         if (pair[1] instanceof File) {
           console.log(
             pair[0],
