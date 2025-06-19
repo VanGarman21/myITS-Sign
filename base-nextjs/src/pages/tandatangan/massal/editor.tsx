@@ -4,7 +4,7 @@ import ToolbarDummyOnly from "@/components/signature/ToolbarDummyOnly";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import FooterDokumen from "@/components/signature/FooterDokumen";
+// import FooterDokumen from "@/components/signature/FooterDokumen";
 
 const DEFAULT_WIDTH = 160;
 const DEFAULT_HEIGHT = 60;
