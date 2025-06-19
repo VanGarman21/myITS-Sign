@@ -103,7 +103,7 @@ export const Modal = ({ children }: { children: ReactNode }) => {
       overflow="auto"
       justifyContent="center"
       pt="84px"
-      onClick={(e) => {
+      onClick={(e: { stopPropagation: () => void; }) => {
         e.stopPropagation();
         setIsModalActive(false);
       }}
@@ -129,7 +129,7 @@ export const Modal = ({ children }: { children: ReactNode }) => {
         variants={modalVariants}
         animate={isModalActive ? "open" : "closed"}
         overflow="none"
-        onClick={(e) => {
+        onClick={(e: { stopPropagation: () => void; }) => {
           e.stopPropagation();
         }}
       >
