@@ -228,6 +228,8 @@ export default function PdfEditorPage() {
             onResizeWidget={handleResizeWidget}
             onDragWidget={handleDragWidget}
             onLockWidget={handleLockWidget}
+            pdfPageOriginalWidth={0}
+            pdfPageOriginalHeight={0}
           />
         </div>
       </div>

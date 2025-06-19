@@ -51,7 +51,15 @@ const PihakLainPage = () => {
   function getCsrfToken() {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; CSRF-TOKEN=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
+    if (parts.length === 2) {
+      const tokenPart = parts.pop();
+      if (tokenPart) {
+        const token = tokenPart.split(";").shift();
+        if (typeof token === "string") {
+          return token;
+        }
+      }
+    }
     return null;
   }
 

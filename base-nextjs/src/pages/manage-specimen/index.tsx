@@ -36,6 +36,8 @@ interface SpesimenData {
   updated_at: string;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+
 const SpecimenPage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -110,7 +112,7 @@ const SpecimenPage = () => {
     try {
       console.log("id_sdm yang dikirim ke backend:", userIdSDM);
       const response = await axios.get(
-        `http://localhost:8080/spesimen/sdm/${userIdSDM}`,
+        `${API_URL}/spesimen/sdm/${userIdSDM}`,
         { withCredentials: true }
       );
       // Jika respons kosong atau id_spesimen kosong, treat as null
@@ -265,7 +267,7 @@ const SpecimenPage = () => {
     }
     setLoading(true);
     try {
-      await axios.get("http://localhost:8080/csrf-cookie", {
+      await axios.get(`${API_URL}/csrf-cookie`, {
         withCredentials: true,
       });
       const csrfToken = getCookie("CSRF-TOKEN");
@@ -301,7 +303,7 @@ const SpecimenPage = () => {
       if (spesimen && spesimen.id_spesimen) {
         // Update spesimen
         await axios.put(
-          `http://localhost:8080/spesimen/${spesimen.id_spesimen}`,
+          `${API_URL}/spesimen/${spesimen.id_spesimen}`,
           payload,
           {
             withCredentials: true,
@@ -313,7 +315,7 @@ const SpecimenPage = () => {
         );
       } else {
         // Buat spesimen baru
-        await axios.post("http://localhost:8080/spesimen", payload, {
+        await axios.post(`${API_URL}/spesimen`, payload, {
           withCredentials: true,
           headers: {
             "x-csrf-token": csrfToken,
@@ -361,12 +363,12 @@ const SpecimenPage = () => {
     setLoading(true);
     try {
       // Ambil CSRF token dulu
-      await axios.get("http://localhost:8080/csrf-cookie", {
+      await axios.get(`${API_URL}/csrf-cookie`, {
         withCredentials: true,
       });
       const csrfToken = getCookie("CSRF-TOKEN");
       await axios.delete(
-        `http://localhost:8080/spesimen/${spesimen.id_spesimen}`,
+        `${API_URL}/spesimen/${spesimen.id_spesimen}`,
         {
           withCredentials: true,
           headers: { "x-csrf-token": csrfToken },

@@ -378,6 +378,8 @@ export default function MassalEditor() {
               }
               onDragWidget={(id, x, y) => handleDragWidget(activeTab, id, x, y)}
               onLockWidget={(id) => handleLockWidget(activeTab, id)}
+              pdfPageOriginalWidth={0}
+              pdfPageOriginalHeight={0}
             />
           </div>
         </div>

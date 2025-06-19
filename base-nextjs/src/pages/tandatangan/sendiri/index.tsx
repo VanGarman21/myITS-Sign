@@ -6,7 +6,7 @@ import PageTransition from "@/components/PageLayout";
 
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-type FooterColor = "hitam" | "purple";
+type FooterColor = "hitam" | "putih";
 type SignatureType = "invisible" | "visible";
 type Language = "id" | "en";
 
@@ -77,9 +77,7 @@ const SendiriPage = () => {
       const reader = new FileReader();
       reader.onload = async (e) => {
         const arrayBuffer = e.target?.result as ArrayBuffer;
-        // Footer text sesuai setting
-        const footerText = `Catatan:\nUU ITE No 11 Tahun 2008 Pasal 5 ayat 1\n"Informasi Elektronik dan/atau Dokumen Elektronik dan/atau hasil cetaknya merupakan alat bukti hukum yang sah"\nDokumen ini telah ditandatangani secara elektronik menggunakan sertifikat elektronik yang diterbitkan BSrE, BSSN\nDokumen ini dapat dibuktikan keasliannya dengan memindai QR Code`;
-        // Ambil setting halaman
+               // Ambil setting halaman
         const showMode = localStorage.getItem("footerShowMode") || "all";
         const pages = (localStorage.getItem("footerPages") || "")
           .split(",")
@@ -87,8 +85,7 @@ const SendiriPage = () => {
           .filter(Boolean);
         const resultBytes = await addFooterToPdf(
           arrayBuffer,
-          footerText,
-          showMode === "all" ? "all" : pages
+          language as "id" | "en" | undefined
         );
         // Simpan ke localStorage (base64)
         const blob = new Blob([resultBytes], { type: "application/pdf" });
@@ -108,7 +105,15 @@ const SendiriPage = () => {
   function getCsrfToken() {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; CSRF-TOKEN=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
+    if (parts.length === 2) {
+      const tokenPart = parts.pop();
+      if (tokenPart) {
+        const token = tokenPart.split(";").shift();
+        if (token !== undefined) {
+          return token;
+        }
+      }
+    }
     return null;
   }
 
@@ -416,9 +421,9 @@ const SendiriPage = () => {
                   Hitam
                 </button>
                 <button
-                  onClick={() => setFooterColor("purple")}
+                  onClick={() => setFooterColor("putih")}
                   className={`px-4 py-2 rounded-md text-sm md:text-base ${
-                    footerColor === "purple"
+                    footerColor === "putih"
                       ? "bg-blue-500 text-white"
                       : "bg-gray-100"
                   }`}

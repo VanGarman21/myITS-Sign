@@ -328,18 +328,13 @@ export default function BatchEditor() {
               signatureWidgets={(widgets[activeTab] || []).filter(
                 (w) => w.pageNumber === (currentPages[activeTab] || 1)
               )}
-              onDropSignature={(x, y, item) =>
-                handleDropSignature(activeTab, x, y, item?.image)
-              }
+              onDropSignature={(x, y, item) => handleDropSignature(activeTab, x, y, item?.image)}
               onRemoveSignature={(id) => handleRemoveSignature(activeTab, id)}
               currentPage={currentPages[activeTab] || 1}
               onNumPages={(n) => handleNumPages(activeTab, n)}
-              onResizeWidget={(id, width, height) =>
-                handleResizeWidget(activeTab, id, width, height)
-              }
+              onResizeWidget={(id, width, height) => handleResizeWidget(activeTab, id, width, height)}
               onDragWidget={(id, x, y) => handleDragWidget(activeTab, id, x, y)}
-              onLockWidget={(id) => handleLockWidget(activeTab, id)}
-            />
+              onLockWidget={(id) => handleLockWidget(activeTab, id)} pdfPageOriginalWidth={0} pdfPageOriginalHeight={0}            />
           </div>
         </div>
       </div>
