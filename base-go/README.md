@@ -69,65 +69,38 @@ Aplikasi web menggunakan framework [ITS Go](https://github.com/dptsi/its-go) yan
    ```
 6. Dokumentasi API dapat diakses melalui `/swagger/index.html` (Pastikan `APP_ENV` bernilai `local`).
 
+## VersiDB API
+
+Endpoint untuk mengelola versi database (`versi_db`).
+
+- **GET /api/versidb**
+  - List versi database (pagination: `page`, `limit`)
+- **GET /api/versidb/:id**
+  - Ambil detail versi database berdasarkan ID
+- **POST /api/versidb**
+  - Tambah versi database baru
+  - Body JSON:
+    ```json
+    {
+      "id_versi": "string",
+      "tanggal": "2024-06-01T00:00:00Z"
+    }
+    ```
+- **PUT /api/versidb/:id**
+  - Update versi database berdasarkan ID
+  - Body JSON sama seperti POST
+- **DELETE /api/versidb/:id**
+  - Hapus versi database berdasarkan ID
+
+Contoh response sukses:
+
+```json
+{
+  "id_versi": "v1.0.0",
+  "tanggal": "2024-06-01T00:00:00Z"
+}
+```
+
 ## Help
 
-1. Jika mendapatkan error `no such table: sessions`,
-
-   ```json
-   {
-     "code": 9005,
-     "data": {
-       "error": "no such table: sessions",
-       "request_id": "4d7fc0dd-2ae9-4a71-9512-6512398c8e19"
-     },
-     "message": "internal_server_error"
-   }
-   ```
-
-   maka pastikan terdapat tabel database untuk menyimpan session sesuai konfigurasi `config/sessions.go` (secara default, framework akan membaca dari tabel sessions). Jika tidak ada, maka perlu tabel dengan struktur berikut:
-
-   ```text
-   id          -> text
-   data        -> text
-   expired_at  -> timestamp
-   csrf_token  -> text
-   ```
-
-   Namun **jika administrator database mengizinkan aplikasi untuk memigrasikan tabel session sendiri**, maka cukup aktifkan auto migration pada `config/sessions.go`.
-
-   ```go
-   package config
-
-   import "github.com/dptsi/its-go/sessions"
-
-   func sessionsConfig() sessions.Config {
-   	return sessions.Config{
-   		Storage:    "database",
-   		Connection: "default",
-   		Table:      "sessions",
-   		Cookie: sessions.CookieConfig{
-   			Name:           "myits_academics_session",
-   			CsrfCookieName: "CSRF-TOKEN",
-   			Path:           "/",
-   			Domain:         "",
-   			Secure:         false,
-   			Lifetime:       60,
-   		},
-   		AutoMigrate: true, // tambahkan line ini
-   	}
-   }
-   ```
-
-## Authors
-
-- [@zydhanlinnar11](https://github.com/zydhanlinnar11)
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE file](./LICENSE) for details
-
-## Acknowledgments
-
-- [Laravel](https://laravel.com)
-- [Base Laravel DPTSI](https://bitbucket.org/dptsi/base-laravel)
-- many others...
+1. Jika mendapatkan error `

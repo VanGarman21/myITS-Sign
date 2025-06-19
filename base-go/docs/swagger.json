@@ -173,9 +173,510 @@
                     }
                 }
             }
+        },
+        "/sdm": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SDM"
+                ],
+                "summary": "List semua SDM",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.SDM"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SDM"
+                ],
+                "summary": "Tambah SDM",
+                "parameters": [
+                    {
+                        "description": "Data SDM",
+                        "name": "sdm",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SDM"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.SDM"
+                        }
+                    }
+                }
+            }
+        },
+        "/sdm/{nik}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SDM"
+                ],
+                "summary": "Get SDM by NIK",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "NIK",
+                        "name": "nik",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SDM"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SDM"
+                ],
+                "summary": "Update SDM by NIK",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "NIK",
+                        "name": "nik",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Data SDM",
+                        "name": "sdm",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SDM"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SDM"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SDM"
+                ],
+                "summary": "Hapus SDM by NIK",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "NIK",
+                        "name": "nik",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/spesimen": {
+            "post": {
+                "description": "Membuat spesimen tanda tangan baru untuk SDM",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Spesimen"
+                ],
+                "summary": "Membuat spesimen tanda tangan baru",
+                "parameters": [
+                    {
+                        "description": "Data spesimen",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.CreateSpesimenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.SpesimenTandaTangan"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/spesimen/sdm/{idSdm}": {
+            "get": {
+                "description": "Mendapatkan spesimen tanda tangan berdasarkan ID SDM",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Spesimen"
+                ],
+                "summary": "Mendapatkan spesimen tanda tangan berdasarkan ID SDM",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID SDM",
+                        "name": "idSdm",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SpesimenTandaTangan"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/spesimen/{id}": {
+            "get": {
+                "description": "Mendapatkan spesimen tanda tangan berdasarkan ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Spesimen"
+                ],
+                "summary": "Mendapatkan spesimen tanda tangan berdasarkan ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Spesimen",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SpesimenTandaTangan"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Memperbarui spesimen tanda tangan berdasarkan ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Spesimen"
+                ],
+                "summary": "Memperbarui spesimen tanda tangan",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Spesimen",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Data update spesimen",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.UpdateSpesimenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SpesimenTandaTangan"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Menghapus spesimen tanda tangan berdasarkan ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Spesimen"
+                ],
+                "summary": "Menghapus spesimen tanda tangan",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Spesimen",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "models.SDM": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "id_sdm": {
+                    "type": "string"
+                },
+                "nama": {
+                    "type": "string"
+                },
+                "nik": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.SpesimenTandaTangan": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id_sdm": {
+                    "type": "string"
+                },
+                "id_spesimen": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updater": {
+                    "type": "string"
+                }
+            }
+        },
+        "requests.CreateSpesimenRequest": {
+            "type": "object",
+            "required": [
+                "data",
+                "id_sdm"
+            ],
+            "properties": {
+                "data": {
+                    "type": "string"
+                },
+                "id_sdm": {
+                    "type": "string"
+                },
+                "updater": {
+                    "type": "string"
+                }
+            }
+        },
+        "requests.UpdateSpesimenRequest": {
+            "type": "object",
+            "required": [
+                "data",
+                "updater"
+            ],
+            "properties": {
+                "data": {
+                    "type": "string"
+                },
+                "updater": {
+                    "type": "string"
+                }
+            }
+        },
         "responses.GeneralResponse": {
             "type": "object",
             "properties": {

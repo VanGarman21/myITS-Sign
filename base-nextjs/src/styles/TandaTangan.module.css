@@ -1,0 +1,195 @@
+.container {
+  max-width: 1100px;
+  margin: 32px auto;
+  padding: 32px 32px 40px 32px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.title {
+  color: #222;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdownButton {
+  background: #2563eb;
+  color: #fff;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+.dropdownButton:hover {
+  background: #1d4ed8;
+}
+
+.dropdownList {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  z-index: 10;
+  margin-top: 4px;
+}
+.dropdownItem {
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #222;
+  transition: background 0.2s;
+}
+.dropdownItem:hover {
+  background: #f1f5f9;
+}
+
+.filterTabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.filterTab {
+  padding: 10px 28px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 24px;
+  background: #f9fafb;
+  color: #222;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border 0.2s, background 0.2s;
+}
+.filterTab.active {
+  border: 2px solid #2563eb;
+  background: #fff;
+  color: #2563eb;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  margin-bottom: 24px;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+.table th, .table td {
+  padding: 14px 12px;
+  text-align: left;
+  font-size: 1rem;
+}
+.table th {
+  color: #222;
+  font-weight: 600;
+  background: #f7fafc;
+  border-bottom: 2px solid #e5e7eb;
+}
+.table tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 6px 18px;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.statusSelesai {
+  background: #e6f9ed;
+  color: #2e7d32;
+}
+.statusPerlu {
+  background: #fdeaea;
+  color: #c62828;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 6px;
+  font-size: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+}
+.iconDownload {
+  color: #2563eb;
+  margin-right: 4px;
+}
+.iconDelete {
+  color: #c62828;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #fff;
+  width: 220px;
+  height: 40px;
+  margin-left: auto;
+  margin-bottom: 18px;
+}
+.searchInput {
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background: transparent;
+  flex: 1;
+  padding: 8px 0;
+}
+
+.pagination {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 18px;
+}
+.pageBtn {
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #f3f4f6;
+  color: #222;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.pageBtn.active {
+  background: #2563eb;
+  color: #fff;
+  border: 1.5px solid #2563eb;
+}
+.pageBtn:disabled {
+  background: #e5e7eb;
+  color: #bdbdbd;
+  cursor: not-allowed;
+} 

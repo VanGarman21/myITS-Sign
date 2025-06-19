@@ -1,3 +1,6 @@
+// CookieParser.tsx
+
+
 const getCookie = (key: string) => {
     const cookies = document.cookie.split('; ')
 

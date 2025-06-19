@@ -1,5 +1,4 @@
 import { ThemeConfig, extendTheme } from "@chakra-ui/react";
-import { Inter } from "next/font/google";
 import ButtonStyles from "./Button";
 import { cardTheme } from "./Card";
 import Color from "./Color";
@@ -10,8 +9,14 @@ import Skeleton from "./Skeleton";
 import { modalTheme } from "./Modal";
 import { menuTheme } from "./Menu";
 import { tooltipTheme } from "./Tooltip";
-
-const inter = Inter({ subsets: ["latin"] });
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/inter/700.css";
+import "@fontsource/poppins/400.css";
+import "@fontsource/poppins/500.css";
+import "@fontsource/poppins/600.css";
+import "@fontsource/poppins/700.css";
 
 const config: ThemeConfig = {
   initialColorMode: "system",
@@ -48,15 +53,15 @@ const theme = extendTheme({
   semanticTokens,
   config,
   fonts: {
-    heading: inter.style.fontFamily,
-    body: inter.style.fontFamily,
+    heading: "var(--font-poppins), sans-serif",
+    body: "var(--font-inter), sans-serif",
   },
   styles: {
-    global: (props: any) => ({
+    global: {
       body: {
-        bg: props.colorMode === "light" ? "white" : "#141414",
+        bg: "gray.50",
       },
-    }),
+    },
   },
   components: {
     Card: cardTheme,
@@ -68,6 +73,11 @@ const theme = extendTheme({
     Modal: modalTheme,
     Menu: menuTheme,
     Tooltip: tooltipTheme,
+    Button: {
+      defaultProps: {
+        colorScheme: "blue",
+      },
+    },
   },
   colors: Color,
 });

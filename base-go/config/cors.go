@@ -7,7 +7,7 @@ func corsConfig() http.CorsConfig {
 		AllowedOrigins:   []string{"http://localhost:3000"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"content-type", "x-csrf-token"},
-		ExposedHeaders:   []string{},
+		ExposedHeaders:   []string{"Id_dokumen"},
 		MaxAge:           0,
 		AllowCredentials: true,
 	}

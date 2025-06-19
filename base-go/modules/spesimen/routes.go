@@ -3,11 +3,11 @@ package spesimen
 import (
 	"github.com/gin-gonic/gin"
 
-	"its.ac.id/base-go/modules/spesimen/handlers"
+	"its.ac.id/base-go/internal/adapters/controller"
 )
 
 // RegisterRoutes mendaftarkan semua routes untuk modul spesimen
-func RegisterRoutes(router *gin.RouterGroup, handler *handlers.SpesimenHandler) {
+func RegisterRoutes(router *gin.RouterGroup, handler *controller.SpesimenHandler) {
 	spesimenRoutes := router.Group("/spesimen")
 	{
 		spesimenRoutes.POST("", handler.Create)

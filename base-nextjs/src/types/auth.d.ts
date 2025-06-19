@@ -3,6 +3,7 @@ type AuthStatus = 'validating' | 'authenticated' | 'unauthenticated'
 interface AuthContextType {
     status: AuthStatus
     hasAccess: boolean
+    user?: AuthProfileType
 }
 
 interface Role {
@@ -19,6 +20,7 @@ interface AuthProfileType {
     picture?: string
     birthdate?: string
     preferred_username?: string
+    sso_user_id?: string
 
     email?: string
     email_verified?: boolean

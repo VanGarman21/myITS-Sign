@@ -85,14 +85,14 @@ export const RadioCard = (props: RadioCardProps) => {
     hasBackground,
     ...rest
   } = props;
-  const { getInputProps, getCheckboxProps, getLabelProps, state } =
+  const { getInputProps, getRadioProps, getLabelProps, state } =
     useRadio(radioProps);
   const id = useId(undefined, "radio-button");
 
   const { colorPref } = useContext(AppSettingContext);
   const styles = useStyleConfig("RadioCard", props);
   const inputProps = getInputProps();
-  const checkboxProps = getCheckboxProps();
+  const radioBoxProps = getRadioProps();
   const labelProps = getLabelProps();
   const borderdefault = useColorModeValue("gray.100", "gray.700");
   const borderactive = useColorModeValue(
@@ -138,7 +138,7 @@ export const RadioCard = (props: RadioCardProps) => {
       {isDisabled ? (
         <Box
           sx={styles}
-          {...checkboxProps}
+          {...radioBoxProps}
           {...rest}
           cursor="not-allowed"
           bg={state.isChecked ? backgroundactive : disabledbackground}
@@ -176,7 +176,7 @@ export const RadioCard = (props: RadioCardProps) => {
       ) : (
         <Box
           sx={styles}
-          {...checkboxProps}
+          {...radioBoxProps}
           {...rest}
           cursor="pointer"
           bg={
@@ -246,14 +246,14 @@ export const RadioCardReverse = (props: RadioCardProps) => {
     hasBackground,
     ...rest
   } = props;
-  const { getInputProps, getCheckboxProps, getLabelProps, state } =
+  const { getInputProps, getRadioProps, getLabelProps, state } =
     useRadio(radioProps);
   const id = useId(undefined, "radio-button");
 
   const { colorPref } = useContext(AppSettingContext);
   const styles = useStyleConfig("RadioCard", props);
   const inputProps = getInputProps();
-  const checkboxProps = getCheckboxProps();
+  const radioBoxProps = getRadioProps();
   const labelProps = getLabelProps();
   const borderdefault = useColorModeValue("gray.100", "gray.700");
   const borderactive = useColorModeValue(
@@ -300,7 +300,7 @@ export const RadioCardReverse = (props: RadioCardProps) => {
       {isDisabled ? (
         <Box
           sx={styles}
-          {...checkboxProps}
+          {...radioBoxProps}
           {...rest}
           cursor="not-allowed"
           bg={state.isChecked ? backgroundactive : disabledbackground}
@@ -339,7 +339,7 @@ export const RadioCardReverse = (props: RadioCardProps) => {
       ) : (
         <Box
           sx={styles}
-          {...checkboxProps}
+          {...radioBoxProps}
           {...rest}
           cursor="pointer"
           bg={

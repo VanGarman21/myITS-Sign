@@ -1,4 +1,60 @@
 definitions:
+  models.SDM:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      enabled:
+        type: boolean
+      id_sdm:
+        type: string
+      nama:
+        type: string
+      nik:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.SpesimenTandaTangan:
+    properties:
+      created_at:
+        type: string
+      data:
+        type: string
+      deleted_at:
+        type: string
+      id_sdm:
+        type: string
+      id_spesimen:
+        type: string
+      updated_at:
+        type: string
+      updater:
+        type: string
+    type: object
+  requests.CreateSpesimenRequest:
+    properties:
+      data:
+        type: string
+      id_sdm:
+        type: string
+      updater:
+        type: string
+    required:
+      - data
+      - id_sdm
+    type: object
+  requests.UpdateSpesimenRequest:
+    properties:
+      data:
+        type: string
+      updater:
+        type: string
+    required:
+      - data
+      - updater
+    type: object
   responses.GeneralResponse:
     properties:
       code:
@@ -38,7 +94,7 @@ definitions:
         type: string
       roles:
         items:
-          $ref: '#/definitions/responses.Role'
+          $ref: "#/definitions/responses.Role"
         type: array
       sub:
         example: 00000000-0000-0000-0000-000000000000
@@ -56,97 +112,385 @@ paths:
   /auth/login:
     post:
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: Link login berhasil didapatkan
           schema:
-            $ref: '#/definitions/responses.GeneralResponse'
+            $ref: "#/definitions/responses.GeneralResponse"
         "500":
           description: Terjadi kesalahan saat menghubungi provider OpenID Connect
           schema:
-            $ref: '#/definitions/responses.GeneralResponse'
+            $ref: "#/definitions/responses.GeneralResponse"
       security:
-      - CSRF Token: []
+        - CSRF Token: []
       summary: Rute untuk mendapatkan link login melalui OpenID Connect
       tags:
-      - Authentication & Authorization
+        - Authentication & Authorization
   /auth/logout:
     delete:
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: Logout berhasil
           schema:
             allOf:
-            - $ref: '#/definitions/responses.GeneralResponse'
-            - properties:
-                code:
-                  type: integer
-                data:
-                  type: string
-                message:
-                  type: string
-              type: object
+              - $ref: "#/definitions/responses.GeneralResponse"
+              - properties:
+                  code:
+                    type: integer
+                  data:
+                    type: string
+                  message:
+                    type: string
+                type: object
       security:
-      - Session: []
-      - CSRF Token: []
+        - Session: []
+        - CSRF Token: []
       summary: Rute untuk logout
       tags:
-      - Authentication & Authorization
+        - Authentication & Authorization
   /auth/user:
     get:
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: Data user berhasil didapatkan
           schema:
             allOf:
-            - $ref: '#/definitions/responses.GeneralResponse'
-            - properties:
-                code:
-                  type: integer
-                data:
-                  allOf:
-                  - $ref: '#/definitions/responses.User'
-                  - properties:
-                      roles:
-                        items:
-                          $ref: '#/definitions/responses.Role'
-                        type: array
-                    type: object
-                message:
-                  type: string
-              type: object
+              - $ref: "#/definitions/responses.GeneralResponse"
+              - properties:
+                  code:
+                    type: integer
+                  data:
+                    allOf:
+                      - $ref: "#/definitions/responses.User"
+                      - properties:
+                          roles:
+                            items:
+                              $ref: "#/definitions/responses.Role"
+                            type: array
+                        type: object
+                  message:
+                    type: string
+                type: object
       security:
-      - Session: []
+        - Session: []
       summary: Rute untuk mendapatkan data user yang sedang login
       tags:
-      - Authentication & Authorization
+        - Authentication & Authorization
   /csrf-cookie:
     get:
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: Cookie berhasil diset
           schema:
             allOf:
-            - $ref: '#/definitions/responses.GeneralResponse'
-            - properties:
-                code:
-                  type: integer
-                message:
-                  type: string
-              type: object
+              - $ref: "#/definitions/responses.GeneralResponse"
+              - properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                type: object
       summary: Rute dummy untuk set CSRF-TOKEN cookie
       tags:
-      - CSRF Protection
+        - CSRF Protection
+  /sdm:
+    get:
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: "#/definitions/models.SDM"
+            type: array
+      summary: List semua SDM
+      tags:
+        - SDM
+    post:
+      consumes:
+        - application/json
+      parameters:
+        - description: Data SDM
+          in: body
+          name: sdm
+          required: true
+          schema:
+            $ref: "#/definitions/models.SDM"
+      produces:
+        - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: "#/definitions/models.SDM"
+      summary: Tambah SDM
+      tags:
+        - SDM
+  /sdm/{nik}:
+    delete:
+      parameters:
+        - description: NIK
+          in: path
+          name: nik
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Hapus SDM by NIK
+      tags:
+        - SDM
+    get:
+      parameters:
+        - description: NIK
+          in: path
+          name: nik
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/models.SDM"
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get SDM by NIK
+      tags:
+        - SDM
+    put:
+      consumes:
+        - application/json
+      parameters:
+        - description: NIK
+          in: path
+          name: nik
+          required: true
+          type: string
+        - description: Data SDM
+          in: body
+          name: sdm
+          required: true
+          schema:
+            $ref: "#/definitions/models.SDM"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/models.SDM"
+      summary: Update SDM by NIK
+      tags:
+        - SDM
+  /spesimen:
+    post:
+      consumes:
+        - application/json
+      description: Membuat spesimen tanda tangan baru untuk SDM
+      parameters:
+        - description: Data spesimen
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/requests.CreateSpesimenRequest"
+      produces:
+        - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: "#/definitions/models.SpesimenTandaTangan"
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Membuat spesimen tanda tangan baru
+      tags:
+        - Spesimen
+  /spesimen/{id}:
+    delete:
+      consumes:
+        - application/json
+      description: Menghapus spesimen tanda tangan berdasarkan ID
+      parameters:
+        - description: ID Spesimen
+          in: path
+          name: id
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Menghapus spesimen tanda tangan
+      tags:
+        - Spesimen
+    get:
+      consumes:
+        - application/json
+      description: Mendapatkan spesimen tanda tangan berdasarkan ID
+      parameters:
+        - description: ID Spesimen
+          in: path
+          name: id
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/models.SpesimenTandaTangan"
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Mendapatkan spesimen tanda tangan berdasarkan ID
+      tags:
+        - Spesimen
+    put:
+      consumes:
+        - application/json
+      description: Memperbarui spesimen tanda tangan berdasarkan ID
+      parameters:
+        - description: ID Spesimen
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: Data update spesimen
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/requests.UpdateSpesimenRequest"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/models.SpesimenTandaTangan"
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Memperbarui spesimen tanda tangan
+      tags:
+        - Spesimen
+  /spesimen/sdm/{idSdm}:
+    get:
+      consumes:
+        - application/json
+      description: Mendapatkan spesimen tanda tangan berdasarkan ID SDM
+      parameters:
+        - description: ID SDM
+          in: path
+          name: idSdm
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/models.SpesimenTandaTangan"
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Mendapatkan spesimen tanda tangan berdasarkan ID SDM
+      tags:
+        - Spesimen
+  tags:
+    - name: Penandatanganan
+    description: CRUD Penandatanganan
+    - name: AnggotaTandatangan
+    description: CRUD Anggota Penandatanganan
+    - name: Dokumen
+    description: CRUD Dokumen
+    - name: LogTandaTangan
+    description: CRUD Log Tanda Tangan
 securityDefinitions:
   CSRF Token:
-    description: CSRF token yang didapatkan dari browser -> inspect element -> application
+    description:
+      CSRF token yang didapatkan dari browser -> inspect element -> application
       -> storage -> cookies -> CSRF-TOKEN (Untuk firefox, storage berada pada tab
       tersendiri)
     in: header

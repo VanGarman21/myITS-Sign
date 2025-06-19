@@ -1,6 +1,11 @@
 import PageTransition from "@/components/PageLayout";
 import ContainerQuery from "@/components/atoms/ContainerQuery";
-import { CheckmarkSquaresSolidIconMade, FormSolidIconMade, HomeSolidIconMade, UserCheckmarkSolidIconMade } from "@/components/atoms/IconsMade";
+import {
+  CheckmarkSquaresSolidIconMade,
+  FormSolidIconMade,
+  HomeSolidIconMade,
+  UserCheckmarkSolidIconMade,
+} from "@/components/atoms/IconsMade";
 import PageRow from "@/components/atoms/PageRow";
 import Wrapper from "@/components/atoms/Wrapper";
 import Carousel from "@/components/molecules/Carousel";
@@ -19,19 +24,26 @@ import {
 import { useTranslations } from "next-intl";
 import Head from "next/head";
 import { useContext } from "react";
+  // import AuthStatus from "@/components/AuthStatus";
 
 const Beranda = () => {
   const { nickname, name } = useContext(AccountInfoContext);
   const t = useTranslations("Beranda");
   const commonTranslations = useTranslations("Common");
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
 
   const icons: { [key: string]: ComponentWithAs<"svg", IconProps> } = {
-    beranda: HomeSolidIconMade,
-    verify: CheckmarkSquaresSolidIconMade, // Ganti dengan ikon yang sesuai
-    table: FormSolidIconMade, // Ganti dengan ikon yang sesuai
-    spesimen: UserCheckmarkSolidIconMade,
+    verify: CheckmarkSquaresSolidIconMade,
+    table: FormSolidIconMade,
+    specimen: UserCheckmarkSolidIconMade,
   };
+
+  const customSubtitles: { [key: string]: string } = {
+    table: "Tanda tangan dokumen elektronik Anda dengan mudah dan aman.",
+    verify: "Cek keaslian dan status tanda tangan elektronik dokumen.",
+    specimen: "Kelola gambar spesimen tanda tangan Anda di sini.",
+  };
+
   const accountInfo = useContext(AccountInfoContext);
 
   return (
@@ -42,82 +54,71 @@ const Beranda = () => {
         </Head>
         <PageRow>
           <ContainerQuery>
-            <PlainCard p="0px">
-              <Carousel duration={8000} w="100%" borderRadius="24px">
-                <Flex
-                  bgGradient={
-                    colorMode === "light"
-                      ? "linear(to-tr, red.500, orange.500)"
-                      : "linear(to-tr, red.600, orange.600)"
-                  }
-                  alignItems="center"
-                  p="32px 56px"
-                  h="300px"
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 36,
+                marginTop: 8,
+                gap: 32,
+              }}
+            >
+              <div style={{ flex: 1 }}>
+                <div
+                  style={{
+                    fontSize: 20,
+                    color: "#64748b",
+                    fontWeight: 500,
+                    marginBottom: 24,
+                  }}
                 >
-                  <Box>
-                    <Text
-                      fontSize="28px"
-                      color="white"
-                      // className={poppins.className}
-                      lineHeight="1.111"
-                    >
-                      myITS Portal
-                    </Text>
-                    <Text
-                      fontSize="16px"
-                      fontWeight="500"
-                      color="white"
-                      mt="8px"
-                      lineHeight="1.5"
-                    >
-                      Rumah aplikasi myITS
-                    </Text>
-                  </Box>
-                </Flex>
-                <Flex
-                  bgGradient={
-                    colorMode === "light"
-                      ? "linear(to-tr, blue.500, cyan.500)"
-                      : "linear(to-tr, blue.600, cyan.600)"
-                  }
-                  alignItems="center"
-                  p="32px 56px"
-                  h="300px"
+                  Selamat datang di myITS Sign
+                </div>
+                <div
+                  style={{
+                    fontSize: 17,
+                    fontWeight: 600,
+                    color: "#222",
+                    marginBottom: 0,
+                  }}
                 >
-                  <Box>
-                    <Text
-                      fontSize="28px"
-                      color="white"
-                      // className={poppins.className}
-                      lineHeight="1.111"
-                    >
-                      myITS Sign
-                    </Text>
-                    <Text
-                      fontSize="16px"
-                      fontWeight="500"
-                      color="white"
-                      mt="8px"
-                      lineHeight="1.5"
-                    >
-                      Kelola Dokumen di sini
-                    </Text>
-                  </Box>
-                </Flex>
-              </Carousel>
-            </PlainCard>
+                  Menu Utama
+                </div>
+              </div>
+              <div
+                style={{
+                  flex: "0 0 140px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  gap: 12,
+                }}
+              >
+                {/* <AuthStatus /> */}
+                <img
+                  src="/myITS-Sign.svg"
+                  alt="myITS Sign"
+                  style={{ width: 120, height: 120, objectFit: "contain" }}
+                />
+              </div>
+            </div>
             <Wrapper mt="-8px">
               {menuItem
-                .filter(({ isShown }) => !isShown || isShown(accountInfo))
+                .filter(
+                  ({ isShown, name }) =>
+                    name !== "beranda" && (!isShown || isShown(accountInfo))
+                )
                 .map(({ name, url }) => {
                   const Icon = icons[name];
-                  // if (!Icon) return null;
-
                   return (
                     <CardDynamicIconShadow
                       key={"card-dinamy-icon-home-" + name}
                       title={commonTranslations(`modules.${name}.title`)}
-                      subtitle={commonTranslations(`modules.${name}.subtitle`)}
+                      subtitle={
+                        customSubtitles[name] ||
+                        commonTranslations(`modules.${name}.subtitle`)
+                      }
                       link={url}
                       icon={Icon ? <Icon w="30px" h="30px" /> : null}
                     />

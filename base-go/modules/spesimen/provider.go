@@ -4,29 +4,31 @@ import (
 	"github.com/samber/do"
 	"gorm.io/gorm"
 
-	"its.ac.id/base-go/modules/spesimen/handlers"
-	"its.ac.id/base-go/modules/spesimen/repositories"
-	"its.ac.id/base-go/modules/spesimen/services"
+	sdmServices "its.ac.id/base-go/internal/usecase"
+	"its.ac.id/base-go/internal/adapters/repository"
+	"its.ac.id/base-go/internal/adapters/controller"
+	spesimenServices "its.ac.id/base-go/internal/usecase"
 )
 
 // RegisterProviders mendaftarkan semua provider untuk modul spesimen
 func RegisterProviders(injector *do.Injector) {
 	// Registrasi repository
-	do.Provide(injector, func(i *do.Injector) (repositories.SpesimenRepository, error) {
+	do.Provide(injector, func(i *do.Injector) (repository.SpesimenRepository, error) {
 		db := do.MustInvoke[*gorm.DB](i)
-		return repositories.NewSpesimenRepository(db), nil
+		return repository.NewSpesimenRepository(db), nil
 	})
 
 	// Registrasi service
-	do.Provide(injector, func(i *do.Injector) (services.SpesimenService, error) {
-		repo := do.MustInvoke[repositories.SpesimenRepository](i)
-		return services.NewSpesimenService(repo), nil
+	do.Provide(injector, func(i *do.Injector) (spesimenServices.SpesimenService, error) {
+		repo := do.MustInvoke[repository.SpesimenRepository](i)
+		return spesimenServices.NewSpesimenService(repo), nil
 	})
 
 	// Registrasi handler
-	do.Provide(injector, func(i *do.Injector) (*handlers.SpesimenHandler, error) {
-		service := do.MustInvoke[services.SpesimenService](i)
-		return handlers.NewSpesimenHandler(service), nil
+	do.Provide(injector, func(i *do.Injector) (*controller.SpesimenHandler, error) {
+		service := do.MustInvoke[spesimenServices.SpesimenService](i)
+		sdmService := do.MustInvoke[sdmServices.SDMService](i)
+		return controller.NewSpesimenHandler(service, sdmService), nil
 	})
 
 	// Registrasi modul

@@ -1,3 +1,4 @@
 export const apiEndpointMap = new Map([
-    ['auth', '/auth/user'],
-])
+  ["auth", "/auth/user"],
+  ["signature-table", "/signature/table"],
+]);

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"bitbucket.org/dptsi/go-modules/auth/internal/presentation/responses"
 
@@ -145,7 +146,7 @@ func (c *AuthController) User(ctx *web.Context) {
 	}
 
 	data := make(map[string]interface{})
-	data["sub"] = user.Id()
+	data["sso_user_id"] = strings.ToUpper(user.Id())
 	data["name"] = nil
 	data["email"] = nil
 	data["phone"] = nil
@@ -211,4 +212,14 @@ func (c *AuthController) Logout(ctx *web.Context) {
 		"message": successMessage,
 		"data":    endSessionEndpoint,
 	})
+}
+
+// LoginRedirect: GET /auth
+func (c *AuthController) LoginRedirect(ctx *web.Context) {
+	url, err := c.oidcClient.RedirectURL(ctx)
+	if err != nil {
+		ctx.Error(fmt.Errorf("unable to get login url: %w", err))
+		return
+	}
+	ctx.Redirect(http.StatusFound, url)
 }
