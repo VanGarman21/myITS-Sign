@@ -24,9 +24,9 @@ const InputRadio: React.FC<InputRadioProps> = ({
   isCard,
   ...props
 }) => {
-  const { getInputProps, getCheckboxProps } = useRadio(props);
+  const { getInputProps, getRadioProps } = useRadio(props);
   const input = getInputProps();
-  const radio = getCheckboxProps();
+  const radio = getRadioProps();
   const { colorMode } = useColorMode();
   const { colorPref } = useContext(AppSettingContext);
 
