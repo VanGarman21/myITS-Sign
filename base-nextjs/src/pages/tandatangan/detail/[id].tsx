@@ -413,10 +413,12 @@ const SignatureDetailPage = () => {
   }, [idSdm]);
 
   // Helper: dokumen array
-  const dokumenArr = Array.isArray(data?.dokumen)
-    ? data.dokumen
-    : data?.dokumen
-    ? [data.dokumen]
+  const dokumenArr = data
+    ? Array.isArray(data.dokumen)
+      ? data.dokumen
+      : data.dokumen
+      ? [data.dokumen]
+      : []
     : [];
   const currentDokumen = dokumenArr[activeDocIdx] || dokumenArr[0];
   // Debug log
