@@ -79,14 +79,14 @@ export const PlainRadio = (props: PlainRadioProps) => {
     hasContent = true,
     ...rest
   } = props;
-  const { getInputProps, getCheckboxProps, getLabelProps, state } =
+  const { getInputProps, getRadioProps, getLabelProps, state } =
     useRadio(radioprops);
   const id = useId(undefined, "radio-button");
 
   const { colorPref } = useContext(AppSettingContext);
   const styles = useStyleConfig("PlainRadio", props);
   const inputProps = getInputProps();
-  const checkboxProps = getCheckboxProps();
+  const radioProps = getRadioProps();
   const labelProps = getLabelProps();
   const borderdefault = useColorModeValue("gray.100", "gray.700");
   const borderactive = useColorModeValue(
@@ -132,7 +132,7 @@ export const PlainRadio = (props: PlainRadioProps) => {
       {isDisabled ? (
         <Box
           sx={styles}
-          {...checkboxProps}
+          {...radioProps}
           {...rest}
           cursor="not-allowed"
           transition="all .25s"
@@ -163,7 +163,7 @@ export const PlainRadio = (props: PlainRadioProps) => {
       ) : (
         <Box
           sx={styles}
-          {...checkboxProps}
+          {...radioProps}
           {...rest}
           cursor="pointer"
           transition="all .25s"
@@ -215,14 +215,14 @@ export const PlainRadioReverse = (props: PlainRadioProps) => {
     hasContent = true,
     ...rest
   } = props;
-  const { getInputProps, getCheckboxProps, getLabelProps, state } =
+  const { getInputProps, getRadioProps, getLabelProps, state } =
     useRadio(radioprops);
   const id = useId(undefined, "radio-button");
 
   const { colorPref } = useContext(AppSettingContext);
   const styles = useStyleConfig("PlainRadio", props);
   const inputProps = getInputProps();
-  const checkboxProps = getCheckboxProps();
+  const radioProps = getRadioProps();
   const labelProps = getLabelProps();
   const borderdefault = useColorModeValue("gray.100", "gray.700");
   const borderactive = useColorModeValue(
@@ -268,7 +268,7 @@ export const PlainRadioReverse = (props: PlainRadioProps) => {
       {isDisabled ? (
         <Box
           sx={styles}
-          {...checkboxProps}
+          {...radioProps}
           {...rest}
           cursor="not-allowed"
           transition="all .25s"
@@ -299,7 +299,7 @@ export const PlainRadioReverse = (props: PlainRadioProps) => {
       ) : (
         <Box
           sx={styles}
-          {...checkboxProps}
+            {...radioProps}
           {...rest}
           cursor="pointer"
           transition="all .25s"

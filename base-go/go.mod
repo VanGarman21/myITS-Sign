@@ -105,4 +105,3 @@ require (
 
 replace bitbucket.org/dptsi/go-modules/auth => ./modules/auth
 
-replace github.com/pdfcpu/pdfcpu => ../../pdfcpu

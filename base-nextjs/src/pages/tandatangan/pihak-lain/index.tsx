@@ -184,7 +184,7 @@ const PihakLainPage = () => {
         );
         console.log("[DEBUG] Response anggota:", anggotaRes.data);
       }
-      window.location.href = "/tandatangan";
+      window.location.href = `/tandatangan/detail/${idPenandatanganan}`;
     } catch (err) {
       alert("Gagal membuat penandatanganan");
     }
@@ -404,6 +404,39 @@ const PihakLainPage = () => {
                 </button>
               </div>
             </div>
+          </div>
+
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold mb-4">
+              Tampilkan Footer dan QR Code
+            </h2>
+            <select
+              value={footerShowMode}
+              onChange={(e) => {
+                setFooterShowMode(e.target.value);
+                localStorage.setItem("footerShowMode", e.target.value);
+                if (e.target.value === "all") {
+                  setFooterPages("");
+                  localStorage.setItem("footerPages", "");
+                }
+              }}
+              className="border rounded px-2 py-1"
+            >
+              <option value="all">Semua Halaman</option>
+              <option value="custom">Halaman Tertentu</option>
+            </select>
+            {footerShowMode === "custom" && (
+              <input
+                type="text"
+                placeholder="1,2,3"
+                value={footerPages}
+                onChange={(e) => {
+                  setFooterPages(e.target.value);
+                  localStorage.setItem("footerPages", e.target.value);
+                }}
+                className="border rounded px-2 py-1 mt-2 w-full"
+              />
+            )}
           </div>
 
           {/* Anggota Penandatangan */}
