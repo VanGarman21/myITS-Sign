@@ -65,14 +65,14 @@ const SpecimenPage = () => {
     setUserLoading(true);
     try {
       // 1. Ambil user SSO yang sedang login
-      const user = await axios.get("http://localhost:8080/auth/user", {
+      const user = await axios.get(`${API_URL}/auth/user`, {
         withCredentials: true,
       });
       const ssoUserId = user.data.data.sso_user_id || user.data.data.sub;
 
       // 2. Ambil data SDM berdasarkan sso_user_id
       const sdm = await axios.get(
-        `http://localhost:8080/sdm/by-sso-id/${ssoUserId}`,
+        `${API_URL}/sdm/by-sso-id/${ssoUserId}`,
         { withCredentials: true }
       );
       console.log("Response dari /sdm/by-sso-id:", sdm.data);

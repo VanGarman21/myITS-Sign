@@ -52,12 +52,12 @@ func main() {
 	_ = godotenv.Load()
 
 	// Override env var manual untuk pastikan
-	os.Setenv("DB_DRIVER", "sqlserver")
-	os.Setenv("DB_USERNAME", "sa")
-	os.Setenv("DB_PASSWORD", "123456")
-	os.Setenv("DB_HOST", "172.29.160.1")
-	os.Setenv("DB_PORT", "1433")
-	os.Setenv("DB_DATABASE", "master")
+	// os.Setenv("DB_DRIVER", "sqlserver")
+	// os.Setenv("DB_USERNAME", "sa")
+	// os.Setenv("DB_PASSWORD", "123456")
+	// os.Setenv("DB_HOST", "172.29.160.1")
+	// os.Setenv("DB_PORT", "1433")
+	// os.Setenv("DB_DATABASE", "master")
 	// dsn := "sqlserver://sa:123456@172.29.160.1:1433?database=master"
 	// db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 	// if err != nil {
@@ -76,7 +76,16 @@ func main() {
 	// it won't block the graceful shutdown handling below
 	go func() {
 		// Inisialisasi koneksi database dan daftarkan ke injector
-		dsn := "sqlserver://sa:123456@172.29.160.1:1433?database=myits_sign"
+		// Ambil parameter dari environment variable
+		driver := os.Getenv("DB_DRIVER")
+		user := os.Getenv("DB_USERNAME")
+		password := os.Getenv("DB_PASSWORD")
+		host := os.Getenv("DB_HOST")
+		port := os.Getenv("DB_PORT")
+		database := os.Getenv("DB_DATABASE")
+		dsn := driver + "://" + user + ":" + password + "@" + host + ":" + port + "?database=" + database
+		log.Println("DSN:", dsn)
+
 		db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{
 			NamingStrategy: schema.NamingStrategy{
 				TablePrefix:   "dbo.",
