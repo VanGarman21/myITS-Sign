@@ -124,8 +124,7 @@ const MassalPage = () => {
     }
     const formData = new FormData();
     formData.append("judul", context);
-    formData.append("type", "3"); // Penandatanganan Massal
-    formData.append("signature_type", signatureType);
+    formData.append("type", signatureType === "invisible" ? "1" : "2");
     formData.append("footer_bahasa", language);
     formData.append("footer_color", footerColor);
     selectedFiles.forEach((file) => {
@@ -135,7 +134,6 @@ const MassalPage = () => {
     formData.append("updater", idSdmUser);
     formData.append("is_footer_exist", "true");
     formData.append("is_bulk_sign", "true");
-    // Kirim insert_footer_page sesuai pilihan user
     if (footerShowMode === "all") {
       formData.append("insert_footer_page", "all");
     } else if (footerShowMode === "custom" && footerPages.trim() !== "") {

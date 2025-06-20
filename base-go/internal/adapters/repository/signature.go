@@ -86,7 +86,7 @@ func getSignatureTypeString(t int) string {
 	case 1:
 		return "Invisible"
 	case 2:
-		return "SpecimenWithTag"
+		return "VisiblewithSpecimen"
 	default:
 		return "Unknown"
 	}

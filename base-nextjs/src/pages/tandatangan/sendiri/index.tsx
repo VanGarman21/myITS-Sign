@@ -77,7 +77,7 @@ const SendiriPage = () => {
       const reader = new FileReader();
       reader.onload = async (e) => {
         const arrayBuffer = e.target?.result as ArrayBuffer;
-               // Ambil setting halaman
+        // Ambil setting halaman
         const showMode = localStorage.getItem("footerShowMode") || "all";
         const pages = (localStorage.getItem("footerPages") || "")
           .split(",")
@@ -135,18 +135,15 @@ const SendiriPage = () => {
     }
     const formData = new FormData();
     formData.append("judul", context);
-    formData.append("type", "1"); // Penandatanganan Sendiri
-    formData.append("is_footer_exist", JSON.stringify(true)); // Selalu ada footer, boolean
-    formData.append("tag", ""); // tag kosong jika tidak ada
-    formData.append("is_bulk_sign", JSON.stringify(false)); // Untuk sendiri, false (boolean)
-    formData.append("signature_type", signatureType); // "invisible" atau "visible"
-    formData.append("footer_bahasa", language); // "id" atau "en"
-    formData.append("footer_color", footerColor); // "hitam" atau "putih"
+    formData.append("type", signatureType === "invisible" ? "1" : "2");
+    formData.append("is_footer_exist", JSON.stringify(true));
+    formData.append("tag", "");
+    formData.append("is_bulk_sign", JSON.stringify(false));
+    formData.append("footer_bahasa", language);
+    formData.append("footer_color", footerColor);
     formData.append("dokumen", selectedFile);
-    // updater dari id_sdm (ambil dari state hasil fetch)
     formData.append("updater", idSdm);
-    formData.append("id_sdm", idSdm); // id_sdm wajib
-    // Kirim insert_footer_page sesuai pilihan user
+    formData.append("id_sdm", idSdm);
     if (footerShowMode === "all") {
       formData.append("insert_footer_page", "all");
     } else if (footerShowMode === "custom" && footerPages.trim() !== "") {

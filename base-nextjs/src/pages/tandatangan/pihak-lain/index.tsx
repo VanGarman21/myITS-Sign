@@ -146,8 +146,7 @@ const PihakLainPage = () => {
     console.log("[DEBUG] idSdmUser:", idSdmUser);
     const formData = new FormData();
     formData.append("judul", context);
-    formData.append("type", "2"); // Penandatanganan Pihak Lain
-    formData.append("signature_type", signatureType);
+    formData.append("type", signatureType === "invisible" ? "1" : "2");
     formData.append("footer_bahasa", language);
     formData.append("footer_color", footerColor);
     formData.append("dokumen", selectedFile);

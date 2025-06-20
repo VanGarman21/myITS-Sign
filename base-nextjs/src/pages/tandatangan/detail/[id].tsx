@@ -147,14 +147,25 @@ const SpecimenEditorDragDrop = ({
   pdfUrl,
   spesimenUrl,
   onPdfReady,
+  signatureWidgets,
+  setSignatureWidgets,
+  pdfPageOriginalWidth,
+  setPdfPageOriginalWidth,
+  pdfPageOriginalHeight,
+  setPdfPageOriginalHeight,
 }: {
   pdfUrl: string;
   spesimenUrl: string;
   onPdfReady: (file: File) => void;
+  signatureWidgets: any[];
+  setSignatureWidgets: React.Dispatch<React.SetStateAction<any[]>>;
+  pdfPageOriginalWidth: number;
+  setPdfPageOriginalWidth: React.Dispatch<React.SetStateAction<number>>;
+  pdfPageOriginalHeight: number;
+  setPdfPageOriginalHeight: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const [pdfData, setPdfData] = useState<string | null>(null);
   const [signatureImage, setSignatureImage] = useState<string | null>(null);
-  const [signatureWidgets, setSignatureWidgets] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [numPages, setNumPages] = useState(1);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
@@ -347,8 +358,12 @@ const SpecimenEditorDragDrop = ({
           onResizeWidget={handleResizeWidget}
           onDragWidget={handleDragWidget}
           onLockWidget={handleWidgetLock}
-          pdfPageOriginalWidth={0}
-          pdfPageOriginalHeight={0}
+          onPageLoadSuccess={(page) => {
+            setPdfPageOriginalWidth(page.originalWidth || page.width);
+            setPdfPageOriginalHeight(page.originalHeight || page.height);
+          }}
+          pdfPageOriginalWidth={pdfPageOriginalWidth}
+          pdfPageOriginalHeight={pdfPageOriginalHeight}
         />
       </Box>
     </Box>
@@ -373,6 +388,9 @@ const SignatureDetailPage = () => {
   const [signatureImage, setSignatureImage] = useState<string | null>(null);
   const [idSdm, setIdSdm] = useState<string>("");
   const [activeDocIdx, setActiveDocIdx] = useState(0);
+  const [signatureWidgets, setSignatureWidgets] = useState<any[]>([]);
+  const [pdfPageOriginalWidth, setPdfPageOriginalWidth] = useState<number>(0);
+  const [pdfPageOriginalHeight, setPdfPageOriginalHeight] = useState<number>(0);
 
   useEffect(() => {
     if (!id) return;
@@ -504,11 +522,53 @@ const SignatureDetailPage = () => {
       }
       // 5. Siapkan FormData
       const formData = new FormData();
-      formData.append("file", pdfFile);
-      formData.append("nik", nik);
-      formData.append("passphrase", passphrase);
-      formData.append("tampilan", "invisible");
-      formData.append("id_penandatanganan", data.id_penandatanganan);
+      if (data.type === 2) {
+        // Ambil widget utama (hanya satu untuk drag & drop spesimen)
+        const widget = signatureWidgets[0];
+        // Ambil image spesimen (base64)
+        const spesimenBase64 = signatureImage;
+        // Konversi base64 ke Blob
+        function base64ToBlob(base64: string, mime: string) {
+          const byteChars = atob(base64.split(",")[1]);
+          const byteNumbers = new Array(byteChars.length);
+          for (let i = 0; i < byteChars.length; i++) {
+            byteNumbers[i] = byteChars.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          return new Blob([byteArray], { type: mime });
+        }
+        const spesimenBlob = spesimenBase64
+          ? base64ToBlob(spesimenBase64, "image/png")
+          : null;
+        const spesimenFile = spesimenBlob
+          ? new File([spesimenBlob], "ttd.png", { type: "image/png" })
+          : null;
+        formData.append("file", pdfFile);
+        formData.append("nik", nik);
+        formData.append("passphrase", passphrase);
+        formData.append("tampilan", "visible");
+        formData.append("image", "true");
+        if (spesimenFile) formData.append("imageTTD", spesimenFile);
+        formData.append("page", widget?.pageNumber?.toString() || "1");
+        // Hitung xAxis, yAxis, width, height sesuai editor.tsx
+        const xAxis = Math.round(widget?.x || 0);
+        const width = Math.round(widget?.width || 160);
+        const height = Math.round(widget?.height || 60);
+        const yAxis = Math.round(
+          pdfPageOriginalHeight - ((widget?.y || 0) + height)
+        );
+        formData.append("xAxis", xAxis.toString());
+        formData.append("yAxis", yAxis.toString());
+        formData.append("width", width.toString());
+        formData.append("height", height.toString());
+      } else {
+        // type 1: default
+        formData.append("file", pdfFile);
+        formData.append("nik", nik);
+        formData.append("passphrase", passphrase);
+        formData.append("tampilan", "invisible");
+        formData.append("id_penandatanganan", data.id_penandatanganan);
+      }
       // 6. Kirim ke backend
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/sign/pdf`,
@@ -712,6 +772,12 @@ const SignatureDetailPage = () => {
                   }
                   spesimenUrl={signatureImage || "/default-spesimen.png"}
                   onPdfReady={(file) => setPdfFileWithSpecimen(file)}
+                  signatureWidgets={signatureWidgets}
+                  setSignatureWidgets={setSignatureWidgets}
+                  pdfPageOriginalWidth={pdfPageOriginalWidth}
+                  setPdfPageOriginalWidth={setPdfPageOriginalWidth}
+                  pdfPageOriginalHeight={pdfPageOriginalHeight}
+                  setPdfPageOriginalHeight={setPdfPageOriginalHeight}
                 />
               </DndProvider>
             </Box>

@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  app:
+    image: vangarman/myits-sign-app:latest
+    container_name: myits-sign-app
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_USER=sqladmin
+      - DB_USERNAME=sqladmin
+      - DB_PASSWORD=88%2Acb%23125
+      - DB_HOST=myitssign-sqlserver.database.windows.net
+      - DB_PORT=1433
+      - DB_DATABASE=myits_sign
+      - PORT=8080
+      - OIDC_PROVIDER=https://dev-my.its.ac.id
+      - OIDC_CLIENT_ID=31FCB52E-BBA3-4FD8-B03F-94E1B566112D
+      - OIDC_CLIENT_SECRET=9cf5kk4tdiwwwwc8cgw0wosk
+      - OIDC_REDIRECT_URL=https://myits-sign-backend-fjapbhdvfgg2gmae.indonesiacentral-01.azurewebsites.net/auth/callback
+      - OIDC_POST_LOGOUT_REDIRECT_URI=https://dev-my.its.ac.id
+      - OIDC_SCOPES=openid email profile resource role
