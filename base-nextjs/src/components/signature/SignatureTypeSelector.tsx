@@ -1,4 +1,4 @@
-import { Box, FormLabel, useBreakpointValue } from "@chakra-ui/react";
+import { Box, FormLabel, StackDirection, useBreakpointValue } from "@chakra-ui/react";
 import { RadioCardGroup, RadioCard } from "@/components/molecules/RadioCard";
 
 interface SignatureTypeSelectorProps {
@@ -20,7 +20,7 @@ const SignatureTypeSelector = ({
         name="signatureType"
         value={value}
         onChange={onChange}
-        direction={direction}
+        direction={direction as StackDirection}
         gap={4}
       >
         <RadioCard
