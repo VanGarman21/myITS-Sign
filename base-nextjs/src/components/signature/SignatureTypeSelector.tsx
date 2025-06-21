@@ -1,4 +1,9 @@
-import { Box, FormLabel, StackDirection, useBreakpointValue } from "@chakra-ui/react";
+import {
+  Box,
+  FormLabel,
+  StackDirection,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { RadioCardGroup, RadioCard } from "@/components/molecules/RadioCard";
 
 interface SignatureTypeSelectorProps {
