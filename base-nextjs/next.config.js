@@ -96,7 +96,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self' data: blob:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' http://localhost:8080 ws://localhost:3000 blob:; worker-src 'self' blob:;"
+            value: `default-src 'self' data: blob:; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' ${process.env.NEXT_PUBLIC_BACKEND_URL} ws: blob:; worker-src 'self' blob:;`
           }
         ],
       },
