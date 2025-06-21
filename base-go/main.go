@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -228,6 +229,28 @@ func main() {
 // @Success		200 {object} responses.GeneralResponse{code=int,message=string} "Cookie berhasil diset"
 // @Header      default {string} Set-Cookie "CSRF-TOKEN=00000000-0000-0000-0000-000000000000; Path=/"
 func CSRFCookieRoute(ctx *web.Context) {
+	// Patch: override Set-Cookie header for CSRF-TOKEN to SameSite=None; Secure
+	cookies := ctx.Writer.Header().Values("Set-Cookie")
+	newCookies := make([]string, 0, len(cookies))
+	for _, c := range cookies {
+		if strings.HasPrefix(c, "CSRF-TOKEN=") {
+			// Replace SameSite=Lax or add SameSite=None; Secure
+			c = strings.ReplaceAll(c, "SameSite=Lax", "SameSite=None")
+			if !strings.Contains(c, "SameSite=None") {
+				c += "; SameSite=None"
+			}
+			if !strings.Contains(c, "Secure") {
+				c += "; Secure"
+			}
+		}
+		newCookies = append(newCookies, c)
+	}
+	if len(newCookies) > 0 {
+		ctx.Writer.Header().Del("Set-Cookie")
+		for _, c := range newCookies {
+			ctx.Writer.Header().Add("Set-Cookie", c)
+		}
+	}
 	ctx.JSON(http.StatusOK, web.H{
 		"code":    0,
 		"message": "success",

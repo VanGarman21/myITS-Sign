@@ -18,9 +18,10 @@ func sessionsConfig() sessions.Config {
 			CsrfCookieName: "CSRF-TOKEN",
 			Path:           "/",
 			Domain:         "",
-			Secure:         false,
+			Secure:         true,
+			SameSite:       "None",
 			Lifetime:       60,
 		},
-		AutoMigrate: true, // tambahkan line ini
+		AutoMigrate: true,
 	}
 }
