@@ -22,7 +22,7 @@ const SignatureActionButtons = ({
       width="100%"
       align={isMobile ? "stretch" : "center"}
     >
-      {/* <Button
+      <Button
         onClick={onSave}
         colorScheme="gray"
         variant="outline"
@@ -33,7 +33,7 @@ const SignatureActionButtons = ({
         width={isMobile ? "100%" : "auto"}
       >
         Simpan ke Editor
-      </Button> */}
+      </Button>
       <Button
         onClick={onSubmit}
         colorScheme="blue"

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { addFooterToPdf } from "@/utils/addFooterToPdf";
 import axios from "axios";
 import { Alert, Box, IconButton, Text } from "@chakra-ui/react";
 import PageTransition from "@/components/PageLayout";
@@ -88,12 +87,9 @@ const SendiriPage = () => {
           .split(",")
           .map((s) => s.trim())
           .filter(Boolean);
-        const resultBytes = await addFooterToPdf(
-          arrayBuffer,
-          language as "id" | "en" | undefined
-        );
+
         // Simpan ke localStorage (base64)
-        const blob = new Blob([resultBytes], { type: "application/pdf" });
+        const blob = new Blob([arrayBuffer], { type: "application/pdf" });
         const fileReader = new FileReader();
         fileReader.onload = (ev) => {
           localStorage.setItem("currentDocument", ev.target?.result as string);

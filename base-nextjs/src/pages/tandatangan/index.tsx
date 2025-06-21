@@ -85,13 +85,13 @@ const SignaturePage: React.FC = () => {
     async function fetchIdSdm() {
       try {
         const user = await axios.get(
-          (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080") +
+          (process.env.NEXT_PUBLIC_BACKEND_URL) +
             "/auth/user",
           { withCredentials: true }
         );
         const ssoUserId = user.data.data.sso_user_id || user.data.data.sub;
         const sdm = await axios.get(
-          (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080") +
+          (process.env.NEXT_PUBLIC_BACKEND_URL) +
             "/sdm/by-sso-id/" +
             ssoUserId,
           { withCredentials: true }

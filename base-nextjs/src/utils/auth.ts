@@ -8,7 +8,6 @@ const getCsrfCookie = async () => {
   try {
     await axios.get(`${BACKEND_URL}/csrf-cookie`, { withCredentials: true });
   } catch (err) {
-    // Tidak perlu throw, biarkan error ditangani di fungsi pemanggil
   }
 };
 

@@ -1,7 +1,7 @@
 import axios, { isAxiosError, CanceledError } from "axios"
 import { useRouter } from "next/router"
 
-const SIGN_OUT_ENDPOINT = (process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8080") + "/auth/logout"
+const SIGN_OUT_ENDPOINT = (process.env.NEXT_PUBLIC_BACKEND_URL) + "/auth/logout"
 
 const useSignOutAction = () => {
     const router = useRouter()

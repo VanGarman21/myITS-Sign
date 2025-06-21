@@ -3,7 +3,7 @@ import axios from "axios";
 
 const getAuthService = async () => {
   const endpoint =
-    (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080") +
+    (process.env.NEXT_PUBLIC_BACKEND_URL ) +
     "/auth/user";
   const auth = await axios
     .get(endpoint, {
