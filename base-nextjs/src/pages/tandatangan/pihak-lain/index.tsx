@@ -35,8 +35,14 @@ const PihakLainPage = () => {
   const [loading, setLoading] = useState(false);
 
   // Handler file upload
-  const handleFileUpload = (file: File | null) => {
-    setSelectedFile(file);
+  const handleFileUpload = (files: File | File[] | null) => {
+    if (Array.isArray(files)) {
+      setSelectedFile(files[0]);
+    } else if (files instanceof File) {
+      setSelectedFile(files);
+    } else {
+      setSelectedFile(null);
+    }
   };
 
   // Handler pencarian SDM

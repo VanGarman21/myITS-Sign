@@ -230,7 +230,7 @@ const SendiriPage = () => {
         <Box mb={8}>
           <SignatureFileUpload
             file={selectedFile}
-            onFileChange={setSelectedFile}
+            onFileChange={(file) => setSelectedFile(file as File)}
             error={!selectedFile ? "File PDF wajib diunggah" : null}
           />
         </Box>
