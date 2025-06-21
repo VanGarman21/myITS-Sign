@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
-import styles from "../../styles/DocumentUpload.module.css";
+import React, { useState } from "react";
 import PageTransition from "@/components/PageLayout";
+import VerifyUploadForm from "@/components/verify/VerifyUploadForm";
+import { Box, Text, Flex, Stack } from "@chakra-ui/react";
 
 const MAX_FILE_SIZE_MB = 10;
 
@@ -9,7 +10,6 @@ const VerifyPage: React.FC = () => {
   const [result, setResult] = useState<any>(null); // result dari backend
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -88,139 +88,77 @@ const VerifyPage: React.FC = () => {
     }
   };
 
-  const getCsrfTokenFromCookie = () => {
-    const cookieString = document.cookie;
-    const cookies = cookieString.split(";");
-    for (const cookie of cookies) {
-      const [name, value] = cookie.trim().split("=");
-      if (name === "CSRF-TOKEN") {
-        return decodeURIComponent(value);
-      }
-    }
-    return "";
-  };
-
   // Helper untuk status
-  const isValid = result && result.status === "valid";
-  const isInvalid = result && result.status === "invalid";
+  const isValid = result && result.summary === "VALID";
+  const isInvalid = result && result.summary !== "VALID";
 
   return (
     <PageTransition pageTitle="Verifikasi Dokumen">
       {/* Judul utama */}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 900,
-          margin: "2.5rem auto 1.5rem auto",
-          padding: "0 1rem",
-        }}
-      ></div>
+      <Box width="100%" maxW={900} mx="auto" my="2.5rem" px={4}></Box>
       {/* Panel 1: Form Upload */}
-      <div
-        className={styles.container}
-        style={{
-          maxWidth: 900,
-          margin: "0 auto",
-          padding: "2.5rem 2rem 2rem 2rem",
-          borderRadius: 16,
-        }}
+      <Box
+        maxW={900}
+        mx="auto"
+        my={0}
+        px={{ base: 4, md: 8 }}
+        py={10}
+        borderRadius={16}
+        bg="white"
+        boxShadow="md"
       >
-        <h2
-          className={styles.title}
-          style={{ fontSize: 20, fontWeight: 600, marginBottom: 18 }}
-        >
+        <Text fontSize={{ base: "lg", md: "xl" }} fontWeight={600} mb={6}>
           Pilih Dokumen Anda
-        </h2>
-        <div className={styles.flexRow} style={{ gap: 12 }}>
-          <div className={styles.inputGroup} style={{ minWidth: 0 }}>
-            <input
-              type="text"
-              value={selectedFile ? selectedFile.name : ""}
-              placeholder="Pilih"
-              readOnly
-              className={styles.inputText}
-              style={{ minWidth: 0 }}
-            />
-            <input
-              type="file"
-              id="document-upload"
-              ref={fileInputRef}
-              onChange={handleFileSelect}
-              className={styles.hiddenInput}
-              accept=".pdf"
-            />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className={styles.cariButton}
-              style={{ borderRadius: "0 8px 8px 0" }}
-            >
-              Cari
-            </button>
-          </div>
-          <button
-            onClick={handleVerification}
-            className={styles.submitButton}
-            disabled={!selectedFile || isLoading}
-            style={{ minWidth: 120 }}
-          >
-            <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <svg
-                width="20"
-                height="20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M5 10h10m0 0l-4-4m4 4l-4 4"
-                  stroke="#fff"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              {isLoading ? "Memproses..." : "Proses"}
-            </span>
-          </button>
-        </div>
-        <div
-          className={styles.hintText}
-          style={{ marginTop: 8, marginLeft: 2 }}
-        >
+        </Text>
+        <VerifyUploadForm
+          selectedFile={selectedFile}
+          isLoading={isLoading}
+          onFileSelect={handleFileSelect}
+          onProcess={handleVerification}
+        />
+        <Text color="gray.500" fontSize="sm" mt={3} ml={1}>
           Hanya dapat mengunggah berkas dengan format <b>.pdf</b>
           <br />
           Ukuran maksimum berkas : 10 MB
-        </div>
-        {error && !result && <div className={styles.errorMessage}>{error}</div>}
-      </div>
+        </Text>
+        {error && !result && (
+          <Text color="red.500" mt={2} fontSize="sm">
+            {error}
+          </Text>
+        )}
+      </Box>
 
       {/* Panel Hasil Verifikasi modern & responsif */}
       {(result || (error && selectedFile)) && (
-        <div className={styles.verifyCardContainer}>
-          <div
-            className={
-              result && result.summary === "VALID"
-                ? `${styles.verifyCard} ${styles.valid}`
-                : `${styles.verifyCard} ${styles.invalid}`
-            }
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-              gap: 32,
-              width: "100%",
-              maxWidth: 800,
-              boxSizing: "border-box",
-              flexWrap: "wrap",
-            }}
+        <Box
+          mt={8}
+          px={{ base: 2, md: 0 }}
+          width="100%"
+          display="flex"
+          justifyContent="center"
+        >
+          <Flex
+            direction={{ base: "column", md: "row" }}
+            align="flex-start"
+            gap={{ base: 4, md: 8 }}
+            width="100%"
+            maxW={800}
+            bg={isValid ? "green.50" : "red.50"}
+            borderWidth={1}
+            borderColor={isValid ? "green.300" : "red.300"}
+            borderRadius={16}
+            p={{ base: 4, md: 6 }}
+            boxSizing="border-box"
+            flexWrap="wrap"
           >
-            <div
-              style={{
-                minWidth: 120,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+            <Box
+              minW={100}
+              maxW={140}
+              w={{ base: "100%", md: 140 }}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              mb={{ base: 2, md: 0 }}
             >
               <img
                 src={
@@ -231,108 +169,100 @@ const VerifyPage: React.FC = () => {
                 alt={
                   result && result.summary === "VALID" ? "Valid" : "Not Valid"
                 }
-                style={{ width: 120, height: 120 }}
+                style={{ width: 100, height: 100, objectFit: "contain" }}
               />
-            </div>
-            <div style={{ flex: 1, minWidth: 260 }}>
-              <div
-                className={
-                  result && result.summary === "VALID"
-                    ? styles.verifyCardTitle + " " + styles.validTitle
-                    : styles.verifyCardTitle + " " + styles.invalidTitle
-                }
-                style={{
-                  marginBottom: 18,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  fontSize: 17,
-                }}
+            </Box>
+            <Box flex={1} minW={0}>
+              <Stack
+                direction="column"
+                spacing={3}
+                mb={2}
+                align="flex-start"
               >
-                <span style={{ fontSize: 22 }}>
-                  {result && result.summary === "VALID" ? "✔" : "✖"}
-                </span>
-                {result?.notes ||
-                  (result && result.summary === "VALID"
-                    ? "Dokumen valid, Sertifikat yang digunakan terpercaya"
-                    : "Dokumen tidak memiliki tandatangan elektronik")}
-              </div>
-              <div
-                className={styles.verifyCardDetail}
-                style={{
-                  background: "#f8fafc",
-                  borderRadius: 8,
-                  padding: 16,
-                  border: "1px solid #bae6fd",
-                }}
-              >
-                <b style={{ fontSize: 16 }}>Detail Dokumen</b>
-                <div style={{ marginTop: 10, fontSize: 15, lineHeight: 1.7 }}>
-                  <div>
-                    <b>Nama File :</b>{" "}
-                    <span style={{ wordBreak: "break-all" }}>
-                      {result?.nama_dokumen}
-                    </span>
-                  </div>
-                  <div>
-                    <b>Ukuran :</b>{" "}
-                    {result?.size
-                      ? `${Math.round(result.size / 1024)} KB`
-                      : selectedFile
-                      ? `${Math.round(selectedFile.size / 1024)} KB`
-                      : "-"}
-                  </div>
-                  <div>
-                    <b>Jumlah Penandatangan :</b>{" "}
-                    {result?.jumlah_signature || 0}
-                  </div>
-                  <div style={{ marginTop: 10 }}>
-                    <b>Detail Penandatangan :</b>
-                  </div>
-                  {Array.isArray(result?.details) &&
-                  result.details.length > 0 ? (
-                    result.details.map((signer: any, idx: number) => (
-                      <div
-                        className={styles.signerDetail}
-                        key={idx}
-                        style={{
-                          background: "#e0f7fa",
-                          borderRadius: 8,
-                          padding: "10px 14px",
-                          marginTop: 8,
-                          fontSize: 14,
-                          boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
-                        }}
-                      >
-                        <div style={{ fontWeight: 600 }}>
-                          {signer.info_signer?.signer_name}
-                        </div>
-                        <div
-                          style={{ fontSize: 13, color: "#555", marginTop: 2 }}
-                        >
-                          <b>Info TSA :</b> {signer.info_tsa?.name}
-                        </div>
-                        <div
-                          style={{ fontSize: 13, color: "#555", marginTop: 2 }}
-                        >
-                          <b>Ditanda tangani pada :</b>{" "}
-                          {signer.signature_document?.signed_in}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div
-                      className={styles.signerDetail}
-                      style={{ marginTop: 8 }}
-                    >
-                      Tidak ada penandatangan
+                <Flex
+                  align="center"
+                  gap={2}
+                  fontSize={{ base: "md", md: "lg" }}
+                  color={isValid ? "green.600" : "red.600"}
+                  fontWeight={600}
+                  wrap="wrap"
+                >
+                  <Box as="span" fontSize={22}>
+                    {result && result.summary === "VALID" ? "✔" : "✖"}
+                  </Box>
+                  <Text as="span" fontWeight={600} fontSize={{ base: "md", md: "lg" }}>
+                    {result?.notes ||
+                      (result && result.summary === "VALID"
+                        ? "Dokumen valid, Sertifikat yang digunakan terpercaya"
+                        : "Dokumen tidak memiliki tandatangan elektronik")}
+                  </Text>
+                </Flex>
+                <Box
+                  bg="white"
+                  borderRadius={8}
+                  p={{ base: 3, md: 4 }}
+                  border="1px solid"
+                  borderColor={isValid ? "green.100" : "blue.200"}
+                  w="100%"
+                  overflowX="auto"
+                >
+                  <Text fontWeight={600} fontSize={16} mb={2}>
+                    Detail Dokumen
+                  </Text>
+                  <Box fontSize={15} lineHeight={1.7} mt={2}>
+                    <div>
+                      <b>Nama File :</b>{" "}
+                      <span style={{ wordBreak: "break-all" }}>
+                        {result?.nama_dokumen}
+                      </span>
                     </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                    <div>
+                      <b>Ukuran :</b>{" "}
+                      {result?.size
+                        ? `${Math.round(result.size / 1024)} KB`
+                        : selectedFile
+                        ? `${Math.round(selectedFile.size / 1024)} KB`
+                        : "-"}
+                    </div>
+                    <div>
+                      <b>Jumlah Penandatangan :</b>{" "}
+                      {result?.jumlah_signature || 0}
+                    </div>
+                    <div style={{ marginTop: 10 }}>
+                      <b>Detail Penandatangan :</b>
+                    </div>
+                    {Array.isArray(result?.details) && result.details.length > 0 ? (
+                      result.details.map((signer: any, idx: number) => (
+                        <Box
+                          key={idx}
+                          bg="#e0f7fa"
+                          borderRadius={8}
+                          p={{ base: 2, md: "10px 14px" }}
+                          mt={2}
+                          fontSize={14}
+                          boxShadow="0 1px 4px rgba(0,0,0,0.03)"
+                          overflowX="auto"
+                        >
+                          <Text fontWeight={600}>{signer.info_signer?.signer_name}</Text>
+                          <Text fontSize={13} color="#555" mt={1}>
+                            <b>Info TSA :</b> {signer.info_tsa?.name}
+                          </Text>
+                          <Text fontSize={13} color="#555" mt={1}>
+                            <b>Ditanda tangani pada :</b> {signer.signature_document?.signed_in}
+                          </Text>
+                        </Box>
+                      ))
+                    ) : (
+                      <Box mt={2} fontSize={14}>
+                        Tidak ada penandatangan
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+              </Stack>
+            </Box>
+          </Flex>
+        </Box>
       )}
     </PageTransition>
   );

@@ -3,7 +3,6 @@ package entities
 import "time"
 
 // Penandatanganan merepresentasikan tabel penandatanganan
-//
 type Penandatanganan struct {
 	IDPenandatanganan string     `json:"id_penandatanganan" gorm:"column:id_penandatanganan;type:uniqueidentifier;primaryKey"`
 	IDSDM             string     `json:"id_sdm" gorm:"column:id_sdm;type:uniqueidentifier"`
@@ -24,7 +23,6 @@ func (Penandatanganan) TableName() string {
 }
 
 // AnggotaTandatangan merepresentasikan tabel anggota_tandatangan
-//
 type AnggotaTandatangan struct {
 	IDAnggotaPenandatangan int        `json:"id_anggota_penandatangan" gorm:"column:id_anggota_penandatangan;primaryKey;autoIncrement"`
 	IDSDM                  string     `json:"id_sdm" gorm:"column:id_sdm;type:uniqueidentifier"`
@@ -43,7 +41,6 @@ func (AnggotaTandatangan) TableName() string {
 }
 
 // Dokumen merepresentasikan tabel dokumen
-//
 type Dokumen struct {
 	IDDokumen         string     `json:"id_dokumen" gorm:"column:id_dokumen;type:uniqueidentifier;primaryKey"`
 	IDPenandatanganan *string    `json:"id_penandatanganan,omitempty" gorm:"column:id_penandatanganan;type:uniqueidentifier"`
@@ -69,7 +66,6 @@ func (Dokumen) TableName() string {
 }
 
 // LogTandaTangan merepresentasikan tabel log_tanda_tangan
-//
 type LogTandaTangan struct {
 	ID         int64     `json:"id" gorm:"column:id;primaryKey;autoIncrement"`
 	IDSDM      string    `json:"id_sdm" gorm:"column:id_sdm;type:uniqueidentifier"`
@@ -102,6 +98,7 @@ type PenandatangananRepository interface {
 	UpdateAnggota(a *AnggotaTandatangan) error
 	DeleteAnggota(id int) error
 	ListAnggotaByPenandatangananID(penandatangananID string) ([]*AnggotaTandatangan, error)
+	DeleteAllAnggotaByPenandatangananID(penandatangananID string) error
 
 	// Dokumen
 	StoreDokumen(d *Dokumen) error
@@ -109,6 +106,7 @@ type PenandatangananRepository interface {
 	UpdateDokumen(d *Dokumen) error
 	DeleteDokumen(id string) error
 	ListDokumenByPenandatangananID(penandatangananID string) ([]*Dokumen, error)
+	DeleteAllDokumenByPenandatangananID(penandatangananID string) error
 
 	// Log
 	StoreLog(l *LogTandaTangan) error

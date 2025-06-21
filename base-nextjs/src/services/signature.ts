@@ -92,3 +92,34 @@ export function downloadDokumen(fileName: string) {
 export async function deleteDokumen(id_dokumen: string) {
   return axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/dokumen/${id_dokumen}`);
 }
+
+export async function getCsrfToken() {
+  await axios.get(
+    "/csrf-cookie",
+    {
+      baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
+      withCredentials: true,
+    }
+  );
+  const match = document.cookie.match(/CSRF-TOKEN=([^;]+)/);
+  return match ? match[1] : "";
+}
+
+export async function deletePenandatanganan(id_penandatanganan: string) {
+  const csrfToken = await getCsrfToken();
+  return axios.delete(
+    `/api/penandatanganan/${id_penandatanganan}`,
+    {
+      baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
+      withCredentials: true,
+      headers: { "X-CSRF-TOKEN": csrfToken },
+    }
+  );
+}
+
+export function getDownloadUrlForDokumen(dokumen: { id_dokumen: string; nama_file: string; is_signed: boolean }) {
+  if (dokumen.is_signed) {
+    return `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/sign/download/${dokumen.id_dokumen}`;
+  }
+  return `${process.env.NEXT_PUBLIC_BACKEND_URL}/public/pdf/${dokumen.nama_file}`;
+}

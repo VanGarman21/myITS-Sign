@@ -76,6 +76,9 @@ func (r *sqlServerPenandatangananRepository) ListAnggotaByPenandatangananID(pena
 	}
 	return anggota, nil
 }
+func (r *sqlServerPenandatangananRepository) DeleteAllAnggotaByPenandatangananID(penandatangananID string) error {
+	return r.db.Where("id_penandatanganan = ?", penandatangananID).Delete(&entities.AnggotaTandatangan{}).Error
+}
 
 // Dokumen CRUD
 func (r *sqlServerPenandatangananRepository) StoreDokumen(d *entities.Dokumen) error {
@@ -102,6 +105,9 @@ func (r *sqlServerPenandatangananRepository) ListDokumenByPenandatangananID(pena
 		return nil, err
 	}
 	return dokumen, nil
+}
+func (r *sqlServerPenandatangananRepository) DeleteAllDokumenByPenandatangananID(penandatangananID string) error {
+	return r.db.Where("id_penandatanganan = ?", penandatangananID).Delete(&entities.Dokumen{}).Error
 }
 
 // Log CRUD

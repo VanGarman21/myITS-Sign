@@ -1,10 +1,15 @@
 package config
 
-import "github.com/dptsi/its-go/http"
+import (
+	"os"
+
+	"github.com/dptsi/its-go/http"
+)
 
 func corsConfig() http.CorsConfig {
+	appFrontendUrl := os.Getenv("APP_FRONTEND_URL")
 	return http.CorsConfig{
-		AllowedOrigins:   []string{"https://my-its-sign.vercel.app//"},
+		AllowedOrigins:   []string{appFrontendUrl},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"content-type", "x-csrf-token"},
 		ExposedHeaders:   []string{"Id_dokumen"},

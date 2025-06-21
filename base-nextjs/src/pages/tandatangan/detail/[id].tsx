@@ -1,6 +1,10 @@
 import { useRouter } from "next/router";
 import { useEffect, useState, useCallback } from "react";
-import { fetchSignatureDetail, SignatureDetail } from "@/services/signature";
+import {
+  fetchSignatureDetail,
+  SignatureDetail,
+  getDownloadUrlForDokumen,
+} from "@/services/signature";
 import PageTransition from "@/components/PageLayout";
 import {
   Box,
@@ -42,6 +46,17 @@ import PdfViewer from "@/components/signature/PdfViewer";
 import { getCookie } from "@/utils/common/CookieParser";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+
+// Helper: konversi base64 ke Blob (pindahkan ke luar block agar tidak error strict mode)
+function base64ToBlob(base64: string, mime: string) {
+  const byteChars = atob(base64.split(",")[1]);
+  const byteNumbers = new Array(byteChars.length);
+  for (let i = 0; i < byteChars.length; i++) {
+    byteNumbers[i] = byteChars.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  return new Blob([byteArray], { type: mime });
+}
 
 // Editor PDF sederhana untuk menempelkan spesimen
 const SimpleSpecimenEditor = ({
@@ -528,15 +543,6 @@ const SignatureDetailPage = () => {
         // Ambil image spesimen (base64)
         const spesimenBase64 = signatureImage;
         // Konversi base64 ke Blob
-        function base64ToBlob(base64: string, mime: string) {
-          const byteChars = atob(base64.split(",")[1]);
-          const byteNumbers = new Array(byteChars.length);
-          for (let i = 0; i < byteChars.length; i++) {
-            byteNumbers[i] = byteChars.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-          return new Blob([byteArray], { type: mime });
-        }
         const spesimenBlob = spesimenBase64
           ? base64ToBlob(spesimenBase64, "image/png")
           : null;
@@ -692,8 +698,8 @@ const SignatureDetailPage = () => {
                 </Text>
                 <Link
                   href={
-                    currentDokumen?.nama_file
-                      ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/public/pdf/${currentDokumen.nama_file}`
+                    currentDokumen
+                      ? getDownloadUrlForDokumen(currentDokumen)
                       : "#"
                   }
                   download
@@ -762,7 +768,7 @@ const SignatureDetailPage = () => {
               )}
             </Box>
             {/* Tambahkan preview editor PDF di bawah detail */}
-            <Box mt={8}>
+            <Box mt={8} width="100%" p={0} m={0}>
               <DndProvider backend={HTML5Backend}>
                 <SpecimenEditorDragDrop
                   pdfUrl={

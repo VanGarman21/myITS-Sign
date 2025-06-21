@@ -22,6 +22,14 @@ func (u *penandatangananUsecase) UpdatePenandatanganan(p *entities.Penandatangan
 	return u.repo.UpdatePenandatanganan(p)
 }
 func (u *penandatangananUsecase) DeletePenandatanganan(id string) error {
+	// Hapus semua anggota terlebih dahulu
+	if err := u.repo.DeleteAllAnggotaByPenandatangananID(id); err != nil {
+		return err
+	}
+	// Hapus semua dokumen terkait
+	if err := u.repo.DeleteAllDokumenByPenandatangananID(id); err != nil {
+		return err
+	}
 	return u.repo.DeletePenandatanganan(id)
 }
 func (u *penandatangananUsecase) ListPenandatanganan(page, limit int) ([]*entities.Penandatanganan, error) {

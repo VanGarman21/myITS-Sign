@@ -1,18 +1,55 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import styles from "../../styles/TandaTangan.module.css";
+import {
+  Box,
+  Button,
+  HStack,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Tabs,
+  TabList,
+  Tab,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  IconButton,
+  Text,
+  Spinner,
+  useBreakpointValue,
+  useToast,
+  Link,
+  Center,
+  VStack,
+} from "@chakra-ui/react";
+import {
+  SearchIcon,
+  ChevronDownIcon,
+  DownloadIcon,
+  DeleteIcon,
+  AddIcon,
+} from "@chakra-ui/icons";
+import axios from "axios";
+import PageTransition from "@/components/PageLayout";
 import {
   fetchSignatureTable,
   SignatureTableRow,
+  deletePenandatanganan,
+  downloadDokumen,
 } from "../../services/signature";
-import { getAuthService } from "../../services/GetAuth";
-import axios from "axios";
-import PageTransition from "@/components/PageLayout";
 
 const dropdownOptions = [
-  "Penandatangan Sendiri",
-  "Penandatangan Dengan Pihak Lain",
-  "Penandatangan Secara Massal",
+  { label: "Penandatangan Sendiri", path: "/tandatangan/sendiri" },
+  { label: "Penandatangan Dengan Pihak Lain", path: "/tandatangan/pihak-lain" },
+  { label: "Penandatangan Secara Massal", path: "/tandatangan/massal" },
 ];
 
 const filterTabs = [
@@ -22,8 +59,14 @@ const filterTabs = [
   "Penandatangan Saya Buat",
 ];
 
+const columns = [
+  { key: "no", label: "No.", sortable: false },
+  { key: "judul", label: "Konteks Penandatangan", sortable: true },
+  { key: "signature_status", label: "Status", sortable: true },
+  { key: "actions", label: "Dokumen", sortable: false },
+];
+
 const SignaturePage: React.FC = () => {
-  const [showDropdown, setShowDropdown] = useState(false);
   const [selectedTab, setSelectedTab] = useState(1);
   const [search, setSearch] = useState("");
   const [data, setData] = useState<SignatureTableRow[]>([]);
@@ -31,22 +74,22 @@ const SignaturePage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [idSdm, setIdSdm] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("judul");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const limit = 10;
   const router = useRouter();
+  const toast = useToast();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
-  // Ambil id_sdm dari backend persis seperti di manage-specimen
   useEffect(() => {
     async function fetchIdSdm() {
       try {
-        // 1. Ambil user SSO yang sedang login
         const user = await axios.get(
           (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080") +
             "/auth/user",
           { withCredentials: true }
         );
         const ssoUserId = user.data.data.sso_user_id || user.data.data.sub;
-
-        // 2. Ambil data SDM berdasarkan sso_user_id
         const sdm = await axios.get(
           (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080") +
             "/sdm/by-sso-id/" +
@@ -65,17 +108,12 @@ const SignaturePage: React.FC = () => {
 
   useEffect(() => {
     if (!idSdm) return;
-    // Validasi UUID
     function isValidUUID(uuid: string) {
       return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
         uuid
       );
     }
-    console.log("id_sdm dari backend:", idSdm);
-    if (!isValidUUID(idSdm)) {
-      console.error("id_sdm tidak valid UUID:", idSdm);
-      return;
-    }
+    if (!isValidUUID(idSdm)) return;
     setLoading(true);
     fetchSignatureTable({
       id_sdm: idSdm,
@@ -91,238 +129,373 @@ const SignaturePage: React.FC = () => {
       .finally(() => setLoading(false));
   }, [idSdm, search, selectedTab, page]);
 
-  const handleSelectChange = (value: string) => {
-    switch (value) {
-      case "Penandatangan Sendiri":
-        router.push("/tandatangan/sendiri");
-        break;
-      case "Penandatangan Dengan Pihak Lain":
-        router.push("/tandatangan/pihak-lain");
-        break;
-      case "Penandatangan Secara Massal":
-        router.push("/tandatangan/massal");
-        break;
-      default:
-        break;
+  // Sorting handler (optional, if backend supports sorting)
+  // const handleSort = (key: string) => {
+  //   if (sortBy === key) {
+  //     setSortDir(sortDir === "asc" ? "desc" : "asc");
+  //   } else {
+  //     setSortBy(key);
+  //     setSortDir("asc");
+  //   }
+  // };
+
+  const totalPages = Math.ceil((total || 0) / limit);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Yakin ingin menghapus penandatanganan ini?")) return;
+    try {
+      await deletePenandatanganan(id);
+      toast({
+        title: "Berhasil menghapus penandatanganan!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      fetchSignatureTable({
+        id_sdm: idSdm,
+        search,
+        status: selectedTab,
+        page,
+        limit,
+      })
+        .then((res) => {
+          setData(Array.isArray(res.aaData) ? res.aaData : []);
+          setTotal(res.iTotalRecords || 0);
+        })
+        .finally(() => setLoading(false));
+    } catch (e: any) {
+      toast({
+        title: "Gagal menghapus penandatanganan",
+        description: e?.response?.data?.error || e.message,
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
     }
   };
 
   return (
     <PageTransition pageTitle="Tanda Tangan Elektronik">
-      <div
-        style={{ background: "#f7f8fa", minHeight: "100vh", padding: "2rem 0" }}
-      >
-        <div className={styles.container}>
-          <div className={styles.title}>Buat Tanda Tangan</div>
-          <div className={styles.actionRow}>
-            <div className={styles.dropdown}>
-              <button
-                className={styles.dropdownButton}
-                onClick={() => setShowDropdown((v) => !v)}
-              >
-                <span style={{ fontSize: 20, marginRight: 8 }}>+</span>{" "}
-                Penandatangan
-                <svg width="14" height="14" style={{ marginLeft: 8 }}>
-                  <path
-                    d="M2 5l5 5 5-5"
-                    stroke="#fff"
-                    strokeWidth="2"
-                    fill="none"
-                  />
-                </svg>
-              </button>
-              {showDropdown && (
-                <div className={styles.dropdownList}>
-                  {dropdownOptions.map((option, idx) => (
-                    <div
-                      key={option}
-                      className={styles.dropdownItem}
-                      onClick={() => {
-                        setShowDropdown(false);
-                        handleSelectChange(option);
-                      }}
-                    >
-                      {option}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-          <div className={styles.filterTabs}>
-            {filterTabs.map((tab, idx) => (
-              <button
-                key={tab}
-                className={
-                  styles.filterTab +
-                  (selectedTab === idx + 1 ? " " + styles.active : "")
-                }
-                onClick={() => {
-                  setSelectedTab(idx + 1);
-                  setPage(1);
-                }}
-                type="button"
-              >
+      <Box maxW={1100} mx="auto" px={{ base: 2, md: 0 }}>
+        <HStack justify="space-between" mb={6} flexWrap="wrap" gap={2}>
+          <Text fontSize={{ base: "lg", md: "2xl" }} fontWeight={700}>
+            Buat Tanda Tangan
+          </Text>
+          <Menu>
+            <MenuButton
+              as={Button}
+              leftIcon={<AddIcon />}
+              rightIcon={<ChevronDownIcon />}
+              colorScheme="blue"
+            >
+              Penandatangan
+            </MenuButton>
+            <MenuList>
+              {dropdownOptions.map((opt) => (
+                <MenuItem key={opt.label} onClick={() => router.push(opt.path)}>
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+        </HStack>
+
+        <Tabs
+          index={selectedTab - 1}
+          onChange={(idx) => {
+            setSelectedTab(idx + 1);
+            setPage(1);
+          }}
+          mb={4}
+          variant="enclosed"
+        >
+          <TabList>
+            {filterTabs.map((tab) => (
+              <Tab key={tab} fontWeight={600}>
                 {tab}
-              </button>
+              </Tab>
             ))}
-          </div>
-          <div
-            style={{ display: "flex", alignItems: "center", marginBottom: 18 }}
-          >
-            <div className={styles.searchBox}>
-              <svg
-                width="18"
-                height="18"
-                fill="none"
-                stroke="#94a3b8"
-                style={{ marginRight: 6 }}
-              >
-                <circle cx="8" cy="8" r="7" strokeWidth="2" />
-                <path d="M13 13l3 3" strokeWidth="2" />
-              </svg>
-              <input
-                className={styles.searchInput}
-                placeholder="Cari"
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
-              />
-            </div>
-          </div>
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>No.</th>
-                  <th>Konteks Penandatangan</th>
-                  <th>Status</th>
-                  <th>Dokumen</th>
-                </tr>
-              </thead>
-              <tbody>
+          </TabList>
+        </Tabs>
+
+        <InputGroup mb={4} maxW={400}>
+          <InputLeftElement pointerEvents="none">
+            <SearchIcon color="gray.400" />
+          </InputLeftElement>
+          <Input
+            placeholder="Cari"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+            bg="white"
+          />
+        </InputGroup>
+
+        <TableContainer
+          borderRadius={12}
+          bg="white"
+          boxShadow="md"
+          overflowX="auto"
+        >
+          {isMobile ? (
+            <Box>
+              {loading ? (
+                <Center py={8}>
+                  <Spinner size="md" color="blue.500" />
+                </Center>
+              ) : !Array.isArray(data) || data.length === 0 ? (
+                <Text textAlign="center" py={8}>
+                  Tidak ada data
+                </Text>
+              ) : (
+                data.map((row, idx) => (
+                  <Box
+                    key={row.id_penandatanganan}
+                    borderWidth={1}
+                    borderRadius={10}
+                    p={3}
+                    mb={3}
+                    boxShadow="sm"
+                  >
+                    <HStack justify="space-between" align="start">
+                      <Box>
+                        <Text
+                          fontWeight={700}
+                          color="blue.600"
+                          fontSize="md"
+                          mb={1}
+                        >
+                          {row.judul}
+                        </Text>
+                        <Text color="gray.500" fontStyle="italic" fontSize="sm">
+                          {row.signature_type}
+                        </Text>
+                        <Box mt={2}>
+                          {row.signature_status === "sudah_ttd" ? (
+                            <Box
+                              as="span"
+                              px={2}
+                              py={1}
+                              borderRadius={8}
+                              bg="green.100"
+                              color="green.700"
+                              fontWeight={600}
+                              fontSize="sm"
+                            >
+                              Sudah Ditandatangani
+                            </Box>
+                          ) : (
+                            <Box
+                              as="span"
+                              px={2}
+                              py={1}
+                              borderRadius={8}
+                              bg="red.100"
+                              color="red.800"
+                              fontWeight={600}
+                              fontSize="sm"
+                            >
+                              Perlu Tandatangan
+                            </Box>
+                          )}
+                        </Box>
+                      </Box>
+                      <VStack align="end" spacing={2}>
+                        <IconButton
+                          aria-label="Unduh"
+                          icon={<DownloadIcon />}
+                          size="sm"
+                          variant="ghost"
+                          colorScheme="blue"
+                          as={Link}
+                          href={row.judul ? downloadDokumen(row.judul) : "#"}
+                          isExternal
+                        />
+                        {row.signature_status === "perlu_ttd" &&
+                          row.can_delete && (
+                            <IconButton
+                              aria-label="Hapus"
+                              icon={<DeleteIcon />}
+                              size="sm"
+                              variant="ghost"
+                              colorScheme="red"
+                              onClick={() =>
+                                handleDelete(row.id_penandatanganan)
+                              }
+                            />
+                          )}
+                      </VStack>
+                    </HStack>
+                  </Box>
+                ))
+              )}
+            </Box>
+          ) : (
+            <Table variant="simple" size="md">
+              <Thead>
+                <Tr>
+                  {columns.map((col) => (
+                    <Th
+                      key={col.key}
+                      cursor={col.sortable ? "pointer" : "default"}
+                      userSelect={col.sortable ? "none" : undefined}
+                      color={col.sortable ? "blue.600" : undefined}
+                      fontWeight={700}
+                      fontSize="md"
+                    >
+                      {col.label}
+                    </Th>
+                  ))}
+                </Tr>
+              </Thead>
+              <Tbody>
                 {loading ? (
-                  <tr>
-                    <td colSpan={4} style={{ textAlign: "center" }}>
-                      Loading...
-                    </td>
-                  </tr>
+                  <Tr>
+                    <Td colSpan={columns.length} textAlign="center">
+                      <Spinner size="md" color="blue.500" />
+                    </Td>
+                  </Tr>
                 ) : !Array.isArray(data) || data.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} style={{ textAlign: "center" }}>
+                  <Tr>
+                    <Td colSpan={columns.length} textAlign="center">
                       Tidak ada data
-                    </td>
-                  </tr>
+                    </Td>
+                  </Tr>
                 ) : (
                   data.map((row, idx) => (
-                    <tr key={row.id_penandatanganan}>
-                      <td>{(page - 1) * limit + idx + 1}</td>
-                      <td>
-                        <span
-                          style={{
-                            color: "#2563eb",
-                            fontWeight: 600,
-                            cursor: "pointer",
-                            textDecoration: "underline",
-                          }}
+                    <Tr key={row.id_penandatanganan} _hover={{ bg: "gray.50" }}>
+                      <Td>{(page - 1) * limit + idx + 1}</Td>
+                      <Td>
+                        <Text
+                          color="blue.600"
+                          fontWeight={600}
+                          cursor="pointer"
+                          textDecor="underline"
                           onClick={() =>
                             router.push(
                               `/tandatangan/detail/${row.id_penandatanganan}`
                             )
                           }
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter")
-                              router.push(
-                                `/tandatangan/detail/${row.id_penandatanganan}`
-                              );
-                          }}
                           tabIndex={0}
-                          role="button"
-                          aria-label={`Lihat detail penandatanganan ${row.judul}`}
+                          _hover={{ color: "blue.800" }}
                         >
                           {row.judul}
-                        </span>
-                        <br />
-                        <span
-                          style={{
-                            color: "#6b7280",
-                            fontStyle: "italic",
-                            fontSize: 13,
-                          }}
-                        >
+                        </Text>
+                        <Text color="gray.500" fontStyle="italic" fontSize="sm">
                           {row.signature_type}
-                        </span>
-                      </td>
-                      <td>
+                        </Text>
+                      </Td>
+                      <Td>
                         {row.signature_status === "sudah_ttd" ? (
-                          <span
-                            className={`${styles.statusBadge} ${styles.statusSelesai}`}
+                          <Box
+                            as="span"
+                            px={2}
+                            py={1}
+                            borderRadius={8}
+                            bg="green.100"
+                            color="green.700"
+                            fontWeight={600}
+                            fontSize="sm"
                           >
                             Sudah Ditandatangani
-                          </span>
+                          </Box>
                         ) : (
-                          <span
-                            className={`${styles.statusBadge} ${styles.statusPerlu}`}
+                          <Box
+                            as="span"
+                            px={2}
+                            py={1}
+                            borderRadius={8}
+                            bg="red.100"
+                            color="red.800"
+                            fontWeight={600}
+                            fontSize="sm"
                           >
                             Perlu Tandatangan
-                          </span>
+                          </Box>
                         )}
-                      </td>
-                      <td>
-                        <button className={styles.iconButton} title="Unduh">
-                          <svg
-                            className={styles.iconDownload}
-                            width="20"
-                            height="20"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                          >
-                            <path d="M10 4v10m0 0l-4-4m4 4l4-4" />
-                            <rect x="4" y="16" width="12" height="2" rx="1" />
-                          </svg>
-                        </button>
-                        {row.signature_status === "perlu_ttd" &&
-                          row.can_delete && (
-                            <button className={styles.iconButton} title="Hapus">
-                              <svg
-                                className={styles.iconDelete}
-                                width="20"
-                                height="20"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              >
-                                <rect x="6" y="8" width="8" height="8" rx="2" />
-                                <path d="M9 8V6a1 1 0 0 1 2 0v2" />
-                                <path d="M4 8h12" />
-                              </svg>
-                            </button>
+                      </Td>
+                      <Td>
+                        <HStack spacing={2}>
+                          {row.judul && (
+                            <Link
+                              href={
+                                row.judul ? downloadDokumen(row.judul) : "#"
+                              }
+                              isExternal
+                            >
+                              <IconButton
+                                aria-label="Unduh"
+                                icon={<DownloadIcon />}
+                                size="sm"
+                                variant="ghost"
+                                colorScheme="blue"
+                              />
+                            </Link>
                           )}
-                      </td>
-                    </tr>
+                          {row.signature_status === "perlu_ttd" &&
+                            row.can_delete && (
+                              <IconButton
+                                aria-label="Hapus"
+                                icon={<DeleteIcon />}
+                                size="sm"
+                                variant="ghost"
+                                colorScheme="red"
+                                onClick={() =>
+                                  handleDelete(row.id_penandatanganan)
+                                }
+                              />
+                            )}
+                        </HStack>
+                      </Td>
+                    </Tr>
                   ))
                 )}
-              </tbody>
-            </table>
-          </div>
-          <div className={styles.pagination}>
-            {Array.from({ length: Math.ceil((total || 0) / limit) }, (_, i) => (
-              <button
-                key={i}
-                className={
-                  styles.pageBtn + (page === i + 1 ? " " + styles.active : "")
-                }
-                onClick={() => setPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+              </Tbody>
+            </Table>
+          )}
+        </TableContainer>
+
+        {/* Pagination */}
+        <HStack justify="center" mt={6} spacing={1} flexWrap="wrap">
+          <Button
+            size="sm"
+            onClick={() => setPage(1)}
+            isDisabled={page === 1}
+            variant="ghost"
+          >
+            Awal
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            isDisabled={page === 1}
+            variant="ghost"
+          >
+            Sebelumnya
+          </Button>
+          <Text fontSize="sm" px={2}>
+            Halaman {page} dari {totalPages}
+          </Text>
+          <Button
+            size="sm"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            isDisabled={page === totalPages || totalPages === 0}
+            variant="ghost"
+          >
+            Selanjutnya
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => setPage(totalPages)}
+            isDisabled={page === totalPages || totalPages === 0}
+            variant="ghost"
+          >
+            Akhir
+          </Button>
+        </HStack>
+      </Box>
     </PageTransition>
   );
 };

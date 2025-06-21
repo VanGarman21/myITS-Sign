@@ -1,5 +1,5 @@
 import { Document, Page, pdfjs } from "react-pdf";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useDrop } from "react-dnd";
 import SignatureWidget from "./SignatureWidget";
 import { DND_TYPE_SIGNATURE } from "./Toolbar";
@@ -47,6 +47,18 @@ export default function PdfViewer({
   pdfPageOriginalHeight,
 }: PdfViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(600);
+
+  useEffect(() => {
+    function updateWidth() {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    }
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
 
   const [, drop] = useDrop(
     () => ({
@@ -69,14 +81,16 @@ export default function PdfViewer({
     <div
       ref={containerRef}
       className="relative flex flex-col items-center w-full"
-      style={{ minHeight: pdfPageOriginalHeight || 700 }}
+      style={{ width: "100%", height: "auto" }}
     >
       <div
         ref={drop}
         style={{
-          width: pdfPageOriginalWidth || 600,
-          height: pdfPageOriginalHeight || 700,
+          width: "100%",
+          maxWidth: "100%",
+          height: "auto",
           position: "relative",
+          margin: "0 auto",
         }}
       >
         <Document
@@ -84,13 +98,16 @@ export default function PdfViewer({
           onLoadSuccess={({ numPages }) => onNumPages(numPages)}
           loading={<div>Memuat PDF...</div>}
         >
-          <Page
-            key={`page_${currentPage}`}
-            pageNumber={currentPage}
-            width={pdfPageOriginalWidth || 600}
-            height={pdfPageOriginalHeight || undefined}
-            onLoadSuccess={onPageLoadSuccess}
-          />
+          <div style={{ display: "block", width: "100%" }}>
+            <Page
+              key={`page_${currentPage}`}
+              pageNumber={currentPage}
+              width={containerWidth}
+              onLoadSuccess={onPageLoadSuccess}
+              renderAnnotationLayer={false}
+              renderTextLayer={false}
+            />
+          </div>
         </Document>
         {signatureWidgets.map((w) => (
           <SignatureWidget
