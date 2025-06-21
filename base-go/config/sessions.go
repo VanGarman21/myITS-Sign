@@ -19,7 +19,6 @@ func sessionsConfig() sessions.Config {
 			Path:           "/",
 			Domain:         "",
 			Secure:         true,
-			SameSite:       "None",
 			Lifetime:       60,
 		},
 		AutoMigrate: true,
