@@ -43,8 +43,14 @@ const MassalPage = () => {
   const [loading, setLoading] = useState(false);
 
   // File upload handler (multiple)
-  const handleFileUpload = (files: File[] | null) => {
-    setSelectedFiles(files || []);
+  const handleFileUpload = (files: File | File[] | null) => {
+    if (Array.isArray(files)) {
+      setSelectedFiles(files);
+    } else if (files instanceof File) {
+      setSelectedFiles([files]);
+    } else {
+      setSelectedFiles([]);
+    }
   };
 
   // Handler pencarian SDM
