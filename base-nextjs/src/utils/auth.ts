@@ -1,8 +1,10 @@
 import axios from "axios";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export const loginSSO = async () => {
   try {
-    const res = await axios.post("http://localhost:8080/auth/login", {}, { withCredentials: true });
+    const res = await axios.post(`${BACKEND_URL}/auth/login`, {}, { withCredentials: true });
     const loginUrl = res.data.data;
     window.location.href = loginUrl;
   } catch (err) {
@@ -12,7 +14,7 @@ export const loginSSO = async () => {
 
 export const getUser = async () => {
   try {
-    const res = await axios.get("http://localhost:8080/auth/user", { withCredentials: true });
+    const res = await axios.get(`${BACKEND_URL}/auth/user`, { withCredentials: true });
     return res.data.data;
   } catch (err) {
     return null;
