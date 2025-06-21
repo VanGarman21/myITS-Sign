@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -11,11 +12,23 @@ const getCsrfCookie = async () => {
   }
 };
 
+// Helper untuk ambil token dari cookie
+const getCsrfTokenFromCookie = () => Cookies.get("CSRF-TOKEN");
+
 export const loginSSO = async () => {
   try {
-    // Ambil CSRF cookie dulu
     await getCsrfCookie();
-    const res = await axios.post(`${BACKEND_URL}/auth/login`, {}, { withCredentials: true });
+    const csrfToken = getCsrfTokenFromCookie();
+    const res = await axios.post(
+      `${BACKEND_URL}/auth/login`,
+      {},
+      {
+        withCredentials: true,
+        headers: {
+          "X-CSRF-TOKEN": csrfToken,
+        },
+      }
+    );
     const loginUrl = res.data.data;
     window.location.href = loginUrl;
   } catch (err) {
@@ -25,9 +38,14 @@ export const loginSSO = async () => {
 
 export const getUser = async () => {
   try {
-    // Ambil CSRF cookie dulu
     await getCsrfCookie();
-    const res = await axios.get(`${BACKEND_URL}/auth/user`, { withCredentials: true });
+    const csrfToken = getCsrfTokenFromCookie();
+    const res = await axios.get(`${BACKEND_URL}/auth/user`, {
+      withCredentials: true,
+      headers: {
+        "X-CSRF-TOKEN": csrfToken,
+      },
+    });
     return res.data.data;
   } catch (err) {
     return null;
